@@ -45,6 +45,27 @@ if (hero) {
   );
 }
 
+// Until the visitor has scrolled a fair way, the next sheet lifts and
+// springs back shortly after load and then every 9 to 14 seconds while the
+// page sits at the top.
+const nextSheet = document.querySelector(".section");
+
+if (nextSheet && !reducedMotion.matches) {
+  let done = false;
+  const invite = () => {
+    if (done) return;
+    if (scrollY <= 8) {
+      nextSheet.classList.remove("is-inviting");
+      void nextSheet.offsetWidth;
+      nextSheet.classList.add("is-inviting");
+    }
+    setTimeout(invite, 9000 + Math.random() * 5000);
+  };
+  nextSheet.addEventListener("animationend", () => nextSheet.classList.remove("is-inviting"));
+  addEventListener("scroll", () => (done ||= scrollY > innerHeight * 0.4), { passive: true });
+  setTimeout(invite, 1800);
+}
+
 // ==== Clock ================================================================
 
 const clock = document.querySelector(".clock");

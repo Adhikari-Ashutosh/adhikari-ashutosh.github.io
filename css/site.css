@@ -109,6 +109,10 @@ a:hover {
   html {
     scroll-behavior: auto;
   }
+
+  .section.is-inviting {
+    animation: none;
+  }
 }
 
 /* ==== Page ============================================================== */
@@ -127,11 +131,43 @@ a:hover {
   scroll-margin-top: calc(var(--i) * var(--cap));
 }
 
+/* The hero fills the screen. The next sheet waits fully below the fold,
+   lifts into view and springs back out once to invite a scroll. The hero
+   is its own stacking context so the glow can sit above its background
+   but under its text. */
 .hero {
   display: flex;
   flex-direction: column;
+  isolation: isolate;
   height: 100svh;
   min-height: 620px;
+}
+
+.section.is-inviting {
+  animation: invite 1300ms both;
+}
+
+@keyframes invite {
+  0% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  30% {
+    transform: translateY(-44px);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.6, 1);
+  }
+  52% {
+    transform: translateY(5px);
+  }
+  68% {
+    transform: translateY(-3px);
+  }
+  84% {
+    transform: translateY(1px);
+  }
+  100% {
+    transform: none;
+  }
 }
 
 .hero > .wrap {
@@ -276,20 +312,30 @@ a:hover {
   line-height: 1.45;
 }
 
+/* The footer lives at the bottom of the last sheet, so the stack is the
+   whole page. */
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.section > .wrap {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
 .colophon {
-  position: relative;
-  padding: 48px 0;
-  background: var(--paper);
+  display: grid;
+  grid-template-columns: var(--label) minmax(0, var(--measure));
+  column-gap: 40px;
+  margin-top: auto;
+  padding: 22px 0 30px;
   border-top: 1px solid var(--hairline);
   color: var(--graphite);
   font-size: 0.875rem;
   line-height: 1.5;
-}
-
-.colophon .wrap {
-  display: grid;
-  grid-template-columns: var(--label) minmax(0, var(--measure));
-  column-gap: 40px;
 }
 
 .colophon p {
@@ -308,7 +354,7 @@ a:hover {
 
   .section-cap,
   .section-body,
-  .colophon .wrap {
+  .colophon {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -585,8 +631,10 @@ a:hover {
 /* The name is redrawn in WebGL (js/name.js); the DOM text keeps the layout
    and stays readable to assistive tech. */
 
+/* Over the name, the lens is the cursor. */
 .name.is-gl {
   color: transparent;
+  cursor: none;
 }
 
 .name canvas {
