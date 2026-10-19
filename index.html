@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ashutosh Adhikari</title>
+<meta name="description" content="Ashutosh Adhikari trains and ships speech recognition models at BharatGen, IIT Bombay, and is learning the linear algebra and compute kernels underneath them.">
+<meta name="color-scheme" content="light dark">
+<script>
+  try {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+  } catch {}
+</script>
+<link rel="canonical" href="https://adhikari-ashutosh.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://adhikari-ashutosh.github.io/">
+<meta property="og:title" content="Ashutosh Adhikari">
+<meta property="og:description" content="I train and ship speech recognition models, and I’m learning the linear algebra and compute kernels underneath them.">
+<meta property="og:image" content="https://adhikari-ashutosh.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ashutosh Adhikari, above a spectrogram of read speech.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ashutosh Adhikari",
+  "url": "https://adhikari-ashutosh.github.io/",
+  "jobTitle": "Generative AI Engineer",
+  "worksFor": { "@type": "Organization", "name": "BharatGen, IIT Bombay" },
+  "sameAs": ["https://github.com/Adhikari-Ashutosh", "https://www.linkedin.com/in/adhikari-ashutosh"]
+}
+</script>
+<link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css?v=1">
+</head>
+<body>
+<a class="skip" href="#now">Skip to content</a>
+
+<main class="stack">
+  <div class="mark" id="top" style="--i: 0"></div>
+  <header class="sheet hero" style="--i: 0">
+    <div class="wrap">
+      <div class="cap">
+        <a class="home" href="#top">Ashutosh Adhikari</a>
+        <nav class="links" aria-label="Elsewhere">
+          <a href="https://github.com/Adhikari-Ashutosh" data-glow="github">GitHub</a>
+          <a href="https://www.linkedin.com/in/adhikari-ashutosh" data-glow="linkedin">LinkedIn</a>
+          <button class="theme" type="button" data-glow="theme" hidden>Dark</button>
+        </nav>
+      </div>
+      <h1 class="name">Ashutosh Adhikari</h1>
+      <p class="lede">I train and ship speech recognition models. On the side, I’m learning what sits underneath them: linear algebra and compute kernels.</p>
+      <figure class="scope">
+        <div class="scope-plot">
+          <span class="scope-unit hz" aria-hidden="true">Hz</span>
+          <span class="scope-unit pitch" aria-hidden="true">pitch</span>
+          <div class="scope-axis hz" aria-hidden="true"></div>
+          <canvas class="scope-canvas" role="img" aria-label="A scrolling log-mel spectrogram, with pitch and formant tracks, of a man reading a passage from The Age of Chivalry."></canvas>
+          <div class="scope-axis pitch" aria-hidden="true"></div>
+          <div class="scope-axis time" aria-hidden="true"></div>
+        </div>
+        <div class="scope-foot">
+          <ul class="legend">
+            <li><span class="key pitch" aria-hidden="true"></span>Pitch, right axis</li>
+            <li><span class="key formant" aria-hidden="true"></span>Formants, vocal-tract resonances</li>
+            <li><span class="key energy" aria-hidden="true"></span>Energy per mel band</li>
+          </ul>
+          <div class="controls">
+            <button class="pill play" type="button" aria-pressed="false" hidden>Play sound</button>
+            <button class="pill mic" type="button" aria-pressed="false" hidden>Use mic</button>
+            <p class="status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </header>
+
+  <div class="mark" id="now" style="--i: 1"></div>
+  <section class="sheet section" style="--i: 1" aria-labelledby="now-title">
+    <div class="wrap">
+      <a class="section-cap" href="#now"><h2 id="now-title">Now</h2><span>Updated October 2026</span></a>
+      <div class="section-body">
+        <ul class="plain">
+          <li>Code-switched speech recognition at BharatGen: getting models to keep up when someone switches between Hindi and English mid-sentence.</li>
+          <li>Writing BLAS routines from scratch in C++, starting with axpy and working toward a multithreaded matrix multiply.</li>
+          <li>Taking Advanced Linear Algebra, my first course in UT Austin’s M.S. in Computer Science.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="mark" id="work" style="--i: 2"></div>
+  <section class="sheet section" style="--i: 2" aria-labelledby="work-title">
+    <div class="wrap">
+      <a class="section-cap" href="#work"><h2 id="work-title">Work</h2><span>BharatGen, IIT Bombay</span></a>
+      <div class="section-body">
+        <article class="entry">
+          <h3>BharatGen, IIT Bombay</h3>
+          <p class="role">Generative AI Engineer</p>
+          <ul class="plain">
+            <li>Helped take <a href="https://huggingface.co/bharatgenai/Shrutam-2">Shrutam-2</a>, BharatGen’s LLM-based speech recognizer, to production.</li>
+            <li>Designed the data filtering for a multi-terabyte multilingual speech corpus, built its manifest pipeline, and ran distributed training on it with NVIDIA NeMo.</li>
+            <li>Built a FastAPI inference service for a Conformer model with RNN-T decoding, fixed batched decoding bugs while moving it to ONNX, and load-tested it.</li>
+            <li>Worked on LLM-based correction of ASR output and on code-switched ASR. Both are now papers under review.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="mark" id="papers" style="--i: 3"></div>
+  <section class="sheet section" style="--i: 3" aria-labelledby="papers-title">
+    <div class="wrap">
+      <a class="section-cap" href="#papers"><h2 id="papers-title">Papers</h2><span>A book chapter, and two papers under review</span></a>
+      <div class="section-body">
+        <ul class="plain">
+          <li class="paper">
+            <span class="title">Span-constrained mixture-of-experts for correcting ASR output with LLMs</span>
+            <span class="meta">Under review, EACL 2027 Industry Track</span>
+          </li>
+          <li class="paper">
+            <span class="title">A learnable router layer for low-rank mixture-of-experts in code-switched ASR</span>
+            <span class="meta">Under review, ICASSP 2027</span>
+          </li>
+          <li class="paper">
+            <a class="title" href="https://doi.org/10.1201/9781003422433-8">Case Study: Streamlining Knowledge Acquisition through AI-Driven Summarization</a>
+            <span class="meta">Book chapter with Ananya Datta and Ami Munshi, in <em>Generative Artificial Intelligence Empowered Learning</em>, CRC Press, 2025</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="mark" id="education" style="--i: 4"></div>
+  <section class="sheet section" style="--i: 4" aria-labelledby="education-title">
+    <div class="wrap">
+      <a class="section-cap" href="#education"><h2 id="education-title">Education</h2><span>UT Austin, NMIMS</span></a>
+      <div class="section-body">
+        <article class="entry">
+          <h3>University of Texas at Austin</h3>
+          <p class="role">M.S. in Computer Science. Started fall 2026.</p>
+        </article>
+        <article class="entry">
+          <h3>NMIMS, Mumbai</h3>
+          <p class="role">Computer Science &amp; Engineering (AI). Graduated 2025.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="colophon">
+  <div class="wrap">
+    <p class="clock" hidden></p>
+    <div>
+      <p class="credit">The voice in the spectrogram reads from <cite>The Age of Chivalry</cite> by Thomas Bulfinch, recorded by Anders Lankford for LibriVox. The clip is from <a href="https://www.openslr.org/12/">LibriSpeech</a>, CC BY 4.0.</p>
+      <p>Plain HTML, CSS and JavaScript. No analytics, and nothing on this page loads from a third party.</p>
+      <p>Last updated 20 October 2026.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="glow" aria-hidden="true"></div>
+
+<script type="module" src="js/site.js?v=1"></script>
+<script type="module" src="js/spectrogram.js?v=1"></script>
+<script type="module" src="js/name.js?v=1"></script>
+</body>
+</html>

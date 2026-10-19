@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found · Ashutosh Adhikari</title>
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<script>
+  try {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+  } catch {}
+</script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preload" href="/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/site.css?v=16">
+<style>
+  .lost {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding: clamp(64px, 14vh, 160px) var(--gutter) 64px;
+  }
+
+  .lost p {
+    margin: 24px 0 0;
+    max-width: 34ch;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    line-height: 1.3;
+  }
+</style>
+</head>
+<body>
+<main class="lost">
+  <h1 class="name">404</h1>
+  <p>Nothing at this address. Try the <a href="/">homepage</a>.</p>
+</main>
+</body>
+</html>
