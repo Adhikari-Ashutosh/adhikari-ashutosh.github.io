@@ -99,7 +99,7 @@ function syncThemeColor() {
 
 if (themeButton) {
   themeButton.addEventListener("click", async () => {
-    const { openPalette } = await import("./palette.js?v=2");
+    const { openPalette } = await import("./palette.js?v=3");
     openPalette();
   });
   themeButton.hidden = false;

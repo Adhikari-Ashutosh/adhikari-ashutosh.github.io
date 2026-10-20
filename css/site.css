@@ -838,8 +838,8 @@ a:hover {
   display: none;
 }
 
-/* A fanned hand of three themes: two of Monkeytype's accents behind, and
-   the theme in use in front. It fans out further on hover. */
+/* A fanned hand of three themes, in ink and paper like everything else.
+   On hover it fans out and the two behind take on Monkeytype accents. */
 .cards {
   position: relative;
   flex: none;
@@ -860,24 +860,31 @@ a:hover {
     var(--paper);
   box-shadow: 0 0 0 1px var(--ink);
   transform-origin: 50% 120%;
-  transition: transform 320ms cubic-bezier(0.3, 1.5, 0.5, 1);
+  transition: transform 320ms cubic-bezier(0.3, 1.5, 0.5, 1), background-color 250ms ease;
+}
+
+.cards i:nth-child(1),
+.cards i:nth-child(2) {
+  background: var(--paper);
 }
 
 .cards i:nth-child(1) {
-  background: #e2b714;
   transform: rotate(-22deg);
 }
 
 .cards i:nth-child(2) {
-  background: #ff7598;
   transform: rotate(22deg);
 }
 
-.theme:hover .cards i:nth-child(1) {
+.theme:hover .cards i:nth-child(1),
+.theme:focus-visible .cards i:nth-child(1) {
+  background: #e2b714;
   transform: rotate(-34deg);
 }
 
-.theme:hover .cards i:nth-child(2) {
+.theme:hover .cards i:nth-child(2),
+.theme:focus-visible .cards i:nth-child(2) {
+  background: #ff7598;
   transform: rotate(34deg);
 }
 

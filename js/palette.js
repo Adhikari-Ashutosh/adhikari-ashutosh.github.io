@@ -305,7 +305,7 @@ function build() {
 
   const foot = document.createElement("p");
   foot.className = "palette-foot";
-  foot.innerHTML = 'Two colours each. Most are reduced from <a href="https://github.com/monkeytypegame/monkeytype">Monkeytype</a>’s community themes.';
+  foot.innerHTML = 'Two colours each. Most are reduced from <a href="https://github.com/monkeytypegame/monkeytype" target="_blank" rel="noopener">Monkeytype</a>’s community themes.';
 
   dialog.append(input, list, foot);
   document.body.append(dialog);
