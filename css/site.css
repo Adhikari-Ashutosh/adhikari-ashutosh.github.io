@@ -630,18 +630,15 @@ a:hover {
   cursor: progress;
 }
 
-.pill.play::before {
-  content: "";
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid currentColor;
+.pill svg {
+  width: 15px;
+  height: 15px;
+  margin: -2px 0;
 }
 
-.pill.play[aria-pressed="true"]::before {
-  width: 9px;
-  height: 9px;
-  border: 0;
-  background: currentColor;
+.pill.sound[aria-pressed="false"] .waves,
+.pill.sound[aria-pressed="true"] .cross {
+  display: none;
 }
 
 .pill.pause::before {
@@ -711,22 +708,19 @@ a:hover {
   }
 
   .legend .more,
-  .pill .more,
   .pill.mic,
   .status {
     display: none;
   }
 
-  .pill.play {
-    padding: 9px 16px 9px 14px;
-  }
-
-  /* Pause is just its icon on a phone. */
-  .pill.pause {
+  /* Pause and sound are just their icons on a phone. */
+  .pill.pause,
+  .pill.sound {
     padding: 9px 13px;
   }
 
-  .pill.pause span {
+  .pill.pause span,
+  .pill.sound span {
     display: none;
   }
 }

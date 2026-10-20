@@ -360,7 +360,7 @@ async function start(figure) {
   const ctx = canvas.getContext("2d");
   const axis = (name) => figure.querySelector(`.scope-axis.${name}`);
   const pauseButton = figure.querySelector(".pill.pause");
-  const playButton = figure.querySelector(".pill.play");
+  const soundButton = figure.querySelector(".pill.sound");
   const micButton = figure.querySelector(".pill.mic");
   const status = figure.querySelector(".status");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
@@ -766,11 +766,6 @@ async function start(figure) {
     button.textContent = on ? onText : offText;
   }
 
-  // "Play sound" shortens to "Play" on a phone.
-  function setPlay(on) {
-    playButton.setAttribute("aria-pressed", String(on));
-    playButton.innerHTML = `${on ? "Stop" : "Play"}<span class="more"> sound</span>`;
-  }
 
   async function play() {
     if (mode === "mic") stopMic();
@@ -791,7 +786,7 @@ async function start(figure) {
     source.start(playback.start, clipPos / SR);
     playback.source = source;
     mode = "play";
-    setPlay(true);
+    soundButton.setAttribute("aria-pressed", "true");
     update();
   }
 
@@ -803,7 +798,7 @@ async function start(figure) {
     }
     playback.source = null;
     if (mode === "play") mode = "idle";
-    setPlay(false);
+    soundButton.setAttribute("aria-pressed", "false");
     update();
   }
 
@@ -1004,9 +999,11 @@ async function start(figure) {
   canvas.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && clearCursor());
 
   pauseButton.addEventListener("click", () => setPaused(!paused));
-  playButton.addEventListener("click", () => (mode === "play" ? stopPlay() : play()));
+  // The page starts muted; the sound button plays the clip in step with
+  // the picture, from wherever it is.
+  soundButton.addEventListener("click", () => (mode === "play" ? stopPlay() : play()));
   micButton.addEventListener("click", () => (mode === "mic" ? stopMic() : listen()));
-  pauseButton.hidden = playButton.hidden = micButton.hidden = false;
+  pauseButton.hidden = soundButton.hidden = micButton.hidden = false;
   update();
 }
 
