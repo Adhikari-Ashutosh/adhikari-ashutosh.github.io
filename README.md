@@ -11,3 +11,4 @@ Third-party material keeps its own license:
 
 - `fonts/bricolage-grotesque.woff2`: Bricolage Grotesque, SIL Open Font License 1.1 (`fonts/OFL.txt`).
 - `audio/chivalry.pcm`: from LibriSpeech (openslr.org/12), *The Age of Chivalry* by Thomas Bulfinch, read by Anders Lankford for LibriVox, CC BY 4.0.
+- The theme palettes in `js/palette.js` are reduced to two colours from the community themes in [Monkeytype](https://github.com/monkeytypegame/monkeytype) (GPL-3.0); credit for the original palettes goes to their authors there.

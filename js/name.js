@@ -27,17 +27,17 @@ uniform float u_alpha;
 uniform vec3 u_ink;
 uniform vec3 u_paper;
 uniform float u_dark;
-uniform vec4 u_eggBox;
+uniform vec4 u_box;
 uniform vec2 u_tiles;
 uniform float u_block;
 uniform float u_step;
 uniform float u_reset;
-uniform float u_egg;
-uniform float u_eggOn;
+uniform float u_fill;
+uniform float u_on;
 varying vec2 v_uv;
 
 bool inBox(vec2 s) {
-  return s.x >= u_eggBox.x && s.x <= u_eggBox.z && s.y >= u_eggBox.y && s.y <= u_eggBox.w;
+  return s.x >= u_box.x && s.x <= u_box.z && s.y >= u_box.y && s.y <= u_box.w;
 }
 
 float cover(vec2 p, float blur) {
@@ -70,33 +70,30 @@ void main() {
     float rim = smoothstep(0.8, 1.0, x);
     vec2 s = u_lens + d * profile * (1.0 - 0.14 * rim);
     float a = cover(s, rim * 1.2) * u_alpha;
-    vec3 col = mix(u_paper, u_ink, a);
-
+    // Under the lens the colours swap: paper letters on an ink disc, with
+    // a sheen along the upper rim and the letters dimming along the lower.
+    vec3 col = mix(u_ink, u_paper, a);
     vec2 n = normalize(d + 1e-4);
-    float edge = smoothstep(0.93, 1.0, x);
     float key = pow(clamp(dot(n, vec2(-0.6, -0.8)), 0.0, 1.0), 5.0) * smoothstep(0.62, 0.97, x);
     float fill = pow(clamp(dot(n, vec2(0.6, 0.8)), 0.0, 1.0), 3.0) * smoothstep(0.55, 1.0, x);
-    col = mix(col, mix(u_paper, u_ink, 0.05), 0.5 * (1.0 - a) * (1.0 - x * x));
-    col = mix(col, u_ink, edge * (u_dark > 0.5 ? 0.2 : 0.45));
-    col = mix(col, u_ink, fill * (u_dark > 0.5 ? 0.0 : 0.12));
-    col = mix(col, u_paper, key * (u_dark > 0.5 ? 0.0 : 0.6));
-    col += key * (u_dark > 0.5 ? 0.45 : 0.0);
-    gl_FragColor = vec4(col, 1.0);
+    col = mix(col, u_paper, key * 0.3 * (1.0 - a));
+    col = mix(col, u_ink, fill * 0.35 * a);
+    // A soft edge against the page.
+    float edge = clamp((1.0 - x) * u_radius / 1.5, 0.0, 1.0);
+    gl_FragColor = vec4(col * edge, edge);
   } else {
     float a;
     float over = 0.0;
-    if (u_eggOn > 0.5 && inBox(p)) {
-      // The letter as the output of a tiled matrix multiply: tiles are
-      // filled in cache-blocked order, each one accumulating over k.
-      vec2 cell = (u_eggBox.zw - u_eggBox.xy) / u_tiles;
-      vec2 local = (p - u_eggBox.xy) / cell;
+    if (u_on > 0.5 && inBox(p)) {
+      vec2 cell = (u_box.zw - u_box.xy) / u_tiles;
+      vec2 local = (p - u_box.xy) / cell;
       vec2 tij = floor(local);
       vec2 mb = floor(tij / u_block);
       vec2 inb = tij - mb * u_block;
       float blocksX = ceil(u_tiles.x / u_block);
       float order = (mb.y * blocksX + mb.x) * u_block * u_block + inb.y * u_block + inb.x;
       float done = clamp(u_step - order, 0.0, 1.0) * (1.0 - u_reset);
-      float ghost = mix(1.0, 0.13, u_egg);
+      float ghost = mix(1.0, 0.13, u_fill);
       a = cover(p, u_blur) * mix(ghost, 1.0, done) * u_alpha;
 
       vec2 f = fract(local);
@@ -107,7 +104,7 @@ void main() {
       float blockEdge = 1.0 - smoothstep(0.45, 1.3, min(eb.x, eb.y));
       float current = step(order, u_step) * (1.0 - step(order + 1.0, u_step)) * (1.0 - u_reset);
       float frame = current * (1.0 - smoothstep(0.7, 1.7, min(e.x, e.y)));
-      over = max(max(grid * 0.12, blockEdge * 0.3), frame * 0.85) * u_egg;
+      over = max(max(grid * 0.12, blockEdge * 0.3), frame * 0.85) * u_fill;
     } else {
       a = cover(p, u_blur) * u_alpha;
     }
@@ -140,7 +137,7 @@ function start(heading) {
   const u = {};
   for (const name of [
     "u_tex", "u_size", "u_lens", "u_radius", "u_zoom", "u_velocity", "u_blur", "u_alpha", "u_ink", "u_paper", "u_dark",
-    "u_eggBox", "u_tiles", "u_block", "u_step", "u_reset", "u_egg", "u_eggOn",
+    "u_box", "u_tiles", "u_block", "u_step", "u_reset", "u_fill", "u_on",
   ]) {
     u[name] = gl.getUniformLocation(program, name);
   }
@@ -183,7 +180,7 @@ function start(heading) {
     opening: null,
   };
 
-  const egg = {
+  const letter = {
     on: false,
     amt: 0,
     step: 0,
@@ -195,23 +192,25 @@ function start(heading) {
   const readout = document.createElement("div");
   readout.className = "readout";
   readout.setAttribute("aria-hidden", "true");
-  readout.innerHTML = '<span class="egg-label">C = A·B, blocked</span><span class="egg-state"></span>';
-  const stateCell = readout.querySelector(".egg-state");
+  readout.innerHTML = '<span class="readout-label">C = A·B, blocked</span><span class="readout-state"></span>';
+  const stateCell = readout.querySelector(".readout-state");
   heading.parentElement.append(readout);
+
+  const probe = document.createElement("canvas").getContext("2d");
 
   function readColors() {
     const s = getComputedStyle(document.documentElement);
     const rgb = (name) => {
-      const probe = document.createElement("span");
-      probe.style.color = s.getPropertyValue(name).trim();
-      document.body.append(probe);
-      const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g).map(Number);
-      probe.remove();
-      return [m[0] / 255, m[1] / 255, m[2] / 255];
+      probe.fillStyle = "#000";
+      probe.fillStyle = s.getPropertyValue(name).trim();
+      const v = probe.fillStyle;
+      const c = v[0] === "#" ? [1, 3, 5].map((i) => parseInt(v.slice(i, i + 2), 16)) : v.match(/\d+/g).slice(0, 3).map(Number);
+      return c.map((x) => x / 255);
     };
+    const lum = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
     state.ink = rgb("--ink");
     state.paper = rgb("--paper");
-    state.dark = state.ink[0] > 0.5 ? 1 : 0;
+    state.dark = lum(state.paper) < lum(state.ink) ? 1 : 0;
   }
 
   // Draw the words into a texture at their DOM positions.
@@ -276,7 +275,7 @@ function start(heading) {
       const baseline = r.top - box.top + state.pad + ascent;
       const x0 = r.left - box.left + state.pad;
       const x1 = r.right - box.left + state.pad - Math.max(0, spacing);
-      egg.box = [x0 - 2, baseline - cap - 3, x1 + 2, baseline + 3];
+      letter.box = [x0 - 2, baseline - cap - 3, x1 + 2, baseline + 3];
       const host = heading.parentElement.getBoundingClientRect();
       readout.style.left = `${r.left - host.left}px`;
       readout.style.top = `${baseline - cap - state.pad + box.top - host.top - 14}px`;
@@ -304,15 +303,15 @@ function start(heading) {
     gl.uniform3fv(u.u_ink, state.ink);
     gl.uniform3fv(u.u_paper, state.paper);
     gl.uniform1f(u.u_dark, state.dark);
-    const eggOn = egg.box && egg.amt > 0.001;
-    gl.uniform1f(u.u_eggOn, eggOn ? 1 : 0);
-    if (eggOn) {
-      gl.uniform4f(u.u_eggBox, egg.box[0] * k, egg.box[1] * k, egg.box[2] * k, egg.box[3] * k);
+    const letterOn = letter.box && letter.amt > 0.001;
+    gl.uniform1f(u.u_on, letterOn ? 1 : 0);
+    if (letterOn) {
+      gl.uniform4f(u.u_box, letter.box[0] * k, letter.box[1] * k, letter.box[2] * k, letter.box[3] * k);
       gl.uniform2f(u.u_tiles, TILES, TILES);
       gl.uniform1f(u.u_block, BLOCK);
-      gl.uniform1f(u.u_step, egg.step);
-      gl.uniform1f(u.u_reset, egg.reset);
-      gl.uniform1f(u.u_egg, egg.amt);
+      gl.uniform1f(u.u_step, letter.step);
+      gl.uniform1f(u.u_reset, letter.reset);
+      gl.uniform1f(u.u_fill, letter.amt);
     }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -342,12 +341,12 @@ function start(heading) {
       [state.r, state.vr] = spring(state.r, state.vr, state.tr, 210, 15, dt);
       [state.z, state.vz] = spring(state.z, state.vz, state.tz, 160, 14, dt);
     }
-    stepEgg(now, dt);
+    stepLetter(now, dt);
     render();
 
     const settled =
       !state.opening &&
-      !egg.on && egg.amt < 0.001 &&
+      !letter.on && letter.amt < 0.001 &&
       Math.abs(state.r - state.tr) < 0.2 && Math.abs(state.vr) < 0.5 &&
       Math.abs(state.z - state.tz) < 0.002 && Math.abs(state.vz) < 0.01 &&
       Math.abs(state.x - state.tx) < 0.2 && Math.abs(state.y - state.ty) < 0.2 &&
@@ -367,8 +366,6 @@ function start(heading) {
     if (!raf) raf = requestAnimationFrame(tick);
   }
 
-  // An 8x8 grid of tiles in 4x4 blocks; each tile takes 40 ms and
-  // accumulates over K steps, then the result holds and clears.
   const TILES = 8;
   const BLOCK = 4;
   const K = 8;
@@ -377,37 +374,37 @@ function start(heading) {
   const HOLD = 1.1;
   const CLEAR = 0.35;
 
-  function stepEgg(now, dt) {
-    if (!egg.box) return;
+  function stepLetter(now, dt) {
+    if (!letter.box) return;
     const follow = 1 - Math.exp(-dt * 9);
-    egg.amt += ((egg.on ? 1 : 0) - egg.amt) * follow;
-    if (!egg.on) return;
-    const t = Math.max(0, (now - egg.start) / 1000) % (SWEEP + HOLD + CLEAR);
+    letter.amt += ((letter.on ? 1 : 0) - letter.amt) * follow;
+    if (!letter.on) return;
+    const t = Math.max(0, (now - letter.start) / 1000) % (SWEEP + HOLD + CLEAR);
     const n = TILES * TILES;
     if (t < SWEEP) {
-      egg.step = t / TILE_S;
-      egg.reset = 0;
-      const tile = Math.min(n, Math.floor(egg.step) + 1);
-      const kk = Math.min(K, Math.floor((egg.step % 1) * K) + 1);
+      letter.step = t / TILE_S;
+      letter.reset = 0;
+      const tile = Math.min(n, Math.floor(letter.step) + 1);
+      const kk = Math.min(K, Math.floor((letter.step % 1) * K) + 1);
       stateCell.textContent = `tile ${tile} of ${n}, k ${kk} of ${K}`;
     } else if (t < SWEEP + HOLD) {
-      egg.step = n;
-      egg.reset = 0;
+      letter.step = n;
+      letter.reset = 0;
       stateCell.textContent = `${n} tiles done`;
     } else {
-      egg.step = n;
-      egg.reset = (t - SWEEP - HOLD) / CLEAR;
+      letter.step = n;
+      letter.reset = (t - SWEEP - HOLD) / CLEAR;
       stateCell.textContent = "";
     }
   }
 
-  function setEgg(on) {
-    if (on === egg.on) return;
-    egg.on = on;
+  function setLetter(on) {
+    if (on === letter.on) return;
+    letter.on = on;
     readout.classList.toggle("is-on", on);
     if (on) {
-      egg.start = performance.now();
-      egg.step = 0;
+      letter.start = performance.now();
+      letter.step = 0;
       state.tr = 0;
       state.tz = 1;
     } else if (state.hovering) {
@@ -417,10 +414,10 @@ function start(heading) {
     wake();
   }
 
-  function overEgg(x, y) {
-    if (!egg.box) return false;
+  function overLetter(x, y) {
+    if (!letter.box) return false;
     const m = 6;
-    return x > egg.box[0] - m && x < egg.box[2] + m && y > egg.box[1] - m && y < egg.box[3] + m;
+    return x > letter.box[0] - m && x < letter.box[2] + m && y > letter.box[1] - m && y < letter.box[3] + m;
   }
 
   // Opener: out of focus, a lens sweeps across, then everything focuses.
@@ -470,8 +467,8 @@ function start(heading) {
       state.y = state.ty = y;
     }
     state.hovering = true;
-    if (overEgg(x, y)) {
-      setEgg(true);
+    if (overLetter(x, y)) {
+      setLetter(true);
     } else {
       state.tr = state.fontSize * 0.55;
       state.tz = 1.85;
@@ -484,8 +481,8 @@ function start(heading) {
     const [x, y] = local(e);
     state.tx = x;
     state.ty = y;
-    clearTimeout(egg.offTimer);
-    setEgg(overEgg(x, y));
+    clearTimeout(letter.offTimer);
+    setLetter(overLetter(x, y));
     wake();
   }
 
@@ -493,7 +490,7 @@ function start(heading) {
     state.hovering = false;
     state.tr = 0;
     state.tz = 1;
-    setEgg(false);
+    setLetter(false);
     wake();
   }
 
@@ -503,12 +500,12 @@ function start(heading) {
   heading.addEventListener("pointercancel", leave);
   heading.addEventListener("pointerup", (e) => {
     if (e.pointerType === "mouse") return;
-    // On touch, let the matrix play for a moment after the finger lifts.
-    if (egg.on) {
+    // On touch, let it play for a moment after the finger lifts.
+    if (letter.on) {
       state.hovering = false;
       state.tr = 0;
-      clearTimeout(egg.offTimer);
-      egg.offTimer = setTimeout(() => setEgg(false), 4000);
+      clearTimeout(letter.offTimer);
+      letter.offTimer = setTimeout(() => setLetter(false), 4000);
       wake();
     } else {
       leave();
@@ -535,9 +532,16 @@ function start(heading) {
       }, 60);
     }).observe(heading);
 
+    // Follow the colours while a new theme fades in.
+    let fadeUntil = 0;
+    let fading = 0;
     window.addEventListener("themechange", () => {
-      readColors();
-      render();
+      fadeUntil = performance.now() + 700;
+      fading ||= requestAnimationFrame(function step(now) {
+        readColors();
+        if (!raf) render();
+        fading = now < fadeUntil ? requestAnimationFrame(step) : 0;
+      });
     });
   });
 

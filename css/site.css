@@ -9,6 +9,38 @@
   font-display: swap;
 }
 
+/* The colours are registered so a change of theme fades over the whole
+   page instead of flashing. */
+@property --paper {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+@property --ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #000000;
+}
+
+@property --graphite {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #5d5d66;
+}
+
+@property --hairline {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #dedee4;
+}
+
+@property --lift {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(0, 0, 0, 0.32);
+}
+
 :root {
   --paper: #ffffff;
   --ink: #000000;
@@ -24,10 +56,15 @@
   --cap: 56px;
 
   color-scheme: light;
+  transition: --paper 600ms ease, --ink 600ms ease, --graphite 600ms ease, --hairline 600ms ease, --lift 600ms ease;
+}
+
+:root.is-revealing {
+  transition: none;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {
     --paper: #000000;
     --ink: #ffffff;
     --graphite: #a1a1aa;
@@ -43,6 +80,12 @@
   --graphite: #a1a1aa;
   --hairline: #2a2a30;
   --lift: rgba(255, 255, 255, 0.1);
+  color-scheme: dark;
+}
+
+/* The other themes set their colours inline (js/palette.js); this tells
+   the browser which way they lean, for scrollbars and form controls. */
+:root[data-scheme="dark"] {
   color-scheme: dark;
 }
 
@@ -108,6 +151,10 @@ a:hover {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  :root {
+    transition: none;
   }
 
   .section.is-inviting {
@@ -381,14 +428,14 @@ a:hover {
     padding: 6px 9px;
   }
 
-  /* Just the half-moon on phones; the button keeps its accessible name. */
-  .theme > span {
-    display: none;
-  }
-
-  .theme::before {
-    width: 15px;
-    height: 15px;
+  /* Just the cards on phones; the button keeps its accessible name. */
+  .theme-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* On a phone each section is as tall as its content, so the next one
@@ -759,18 +806,53 @@ a:hover {
   display: none;
 }
 
-.theme::before {
-  content: "";
-  width: 0.8em;
-  height: 0.8em;
-  border: 1.5px solid currentColor;
-  border-radius: 50%;
-  background: linear-gradient(90deg, currentColor 50%, transparent 50%);
-  transition: transform 300ms ease;
+/* A fanned hand of three themes: two of Monkeytype's accents behind, and
+   the theme in use in front. It fans out further on hover. */
+.cards {
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 17px;
 }
 
-.theme[data-current="dark"]::before {
-  transform: rotate(180deg);
+.cards i {
+  position: absolute;
+  bottom: 0;
+  left: 6.5px;
+  width: 11px;
+  height: 15px;
+  border-radius: 2.5px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 2.5px 3.5px / 6px 1.5px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 2.5px 7px / 4px 1.5px no-repeat,
+    var(--paper);
+  box-shadow: 0 0 0 1px var(--ink);
+  transform-origin: 50% 120%;
+  transition: transform 320ms cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.cards i:nth-child(1) {
+  background: #e2b714;
+  transform: rotate(-22deg);
+}
+
+.cards i:nth-child(2) {
+  background: #ff7598;
+  transform: rotate(22deg);
+}
+
+.theme:hover .cards i:nth-child(1) {
+  transform: rotate(-34deg);
+}
+
+.theme:hover .cards i:nth-child(2) {
+  transform: rotate(34deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cards i {
+    transition: none;
+  }
 }
 
 /* Each link is a pill whose outline lights up where the pointer is, in
@@ -826,7 +908,7 @@ a:hover {
   }
 }
 
-/* The new theme opens out from the switch in a circle. */
+/* On a touchscreen a new theme opens out from the finger in a circle. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -843,5 +925,140 @@ a:hover {
   }
   to {
     clip-path: circle(150vmax at var(--reveal-x, 90%) var(--reveal-y, 0%));
+  }
+}
+
+/* ==== Theme palette ===================================================== */
+/* A search box over a list of themes, near the top of the screen so the
+   page shows through around it while themes are tried on. */
+
+.palette {
+  top: clamp(56px, 11vh, 112px);
+  bottom: auto;
+  width: min(440px, calc(100vw - 32px));
+  max-height: min(70vh, 580px);
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 28px 70px -30px var(--lift);
+}
+
+.palette[open] {
+  display: flex;
+  flex-direction: column;
+  animation: palette-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.palette::backdrop {
+  background: transparent;
+}
+
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+}
+
+.palette-search {
+  flex: none;
+  width: 100%;
+  padding: 15px 18px;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 500 1rem/1.3 var(--font);
+}
+
+.palette-search::placeholder {
+  color: var(--graphite);
+  opacity: 1;
+}
+
+.palette-list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scrollbar-color: var(--hairline) transparent;
+  scrollbar-width: thin;
+}
+
+.palette-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.palette-list li[hidden] {
+  display: none;
+}
+
+.palette-list li.is-active {
+  background: var(--hairline);
+}
+
+.palette-list .swatch {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 24px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.palette-list .swatch.is-system {
+  background: linear-gradient(135deg, #ffffff 50%, #000000 50%);
+  color: transparent;
+}
+
+.palette-list .palette-note {
+  color: var(--graphite);
+  font-size: 0.8125rem;
+}
+
+.palette-list [aria-selected="true"]::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.palette-foot {
+  flex: none;
+  margin: 0;
+  padding: 10px 18px 12px;
+  border-top: 1px solid var(--hairline);
+  color: var(--graphite);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.palette-foot a {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palette[open] {
+    animation: none;
   }
 }

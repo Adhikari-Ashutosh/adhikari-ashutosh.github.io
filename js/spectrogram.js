@@ -349,9 +349,6 @@ class Resampler {
 
 // ==== Display ==============================================================
 
-const figure = document.querySelector(".scope");
-if (figure) start(figure);
-
 async function start(figure) {
   const canvas = figure.querySelector("canvas");
   const ctx = canvas.getContext("2d");
@@ -360,8 +357,6 @@ async function start(figure) {
   const micButton = figure.querySelector(".pill.mic");
   const status = figure.querySelector(".status");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-  const systemDark = matchMedia("(prefers-color-scheme: dark)");
-  const isDark = () => (document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : systemDark.matches);
 
   // The clip, with a short pause before it loops.
   let clip;
@@ -394,7 +389,7 @@ async function start(figure) {
   const ictx = image.getContext("2d");
   let strip = ictx.createImageData(16, NMELS);
   let colors = readColors();
-  let lut = buildLut(isDark());
+  let lut = buildLut(colors);
 
   const push = (f) => {
     const slot = head % CAP;
@@ -417,9 +412,11 @@ async function start(figure) {
       const floor = ring.ref[slot] - RANGE_DB;
       for (let b = 0; b < NMELS; b++) {
         const v = Math.round(((ring.db[slot * NMELS + b] - floor) / RANGE_DB) * 255);
-        const g = lut[Math.max(0, Math.min(255, v))];
+        const k = Math.max(0, Math.min(255, v)) * 3;
         const o = ((NMELS - 1 - b) * w + c) * 4;
-        px[o] = px[o + 1] = px[o + 2] = g;
+        px[o] = lut[k];
+        px[o + 1] = lut[k + 1];
+        px[o + 2] = lut[k + 2];
         px[o + 3] = 255;
       }
     }
@@ -428,7 +425,7 @@ async function start(figure) {
 
   function repaint() {
     pending = 0;
-    ictx.fillStyle = `rgb(${lut[0]}, ${lut[0]}, ${lut[0]})`;
+    ictx.fillStyle = `rgb(${lut[0]}, ${lut[1]}, ${lut[2]})`;
     ictx.fillRect(0, 0, CAP, NMELS);
     const count = Math.min(head, CAP);
     for (let done = 0; done < count; done += 256) paint(done, Math.min(256, count - done));
@@ -886,11 +883,18 @@ async function start(figure) {
   addEventListener("themetransition", (e) => {
     pausedUntil = performance.now() + e.detail;
   });
+  // Follow the colours while a new theme fades in.
+  let fadeUntil = 0;
+  let fading = 0;
   addEventListener("themechange", () => {
-    colors = readColors();
-    lut = buildLut(isDark());
-    repaint();
-    draw();
+    fadeUntil = performance.now() + 700;
+    fading ||= requestAnimationFrame(function step(now) {
+      colors = readColors();
+      lut = buildLut(colors);
+      repaint();
+      if (!running) draw();
+      fading = now < fadeUntil ? requestAnimationFrame(step) : 0;
+    });
   });
   document.addEventListener("visibilitychange", update);
   reduced.addEventListener("change", update);
@@ -930,11 +934,28 @@ function readColors() {
   };
 }
 
-// Grayscale, as in a phonetics lab: louder is darker on paper, brighter on
-// black.
-function buildLut(dark) {
-  return Uint8ClampedArray.from({ length: 256 }, (_, i) => {
-    const ink = Math.pow(i / 255, 1.6);
-    return Math.round(255 * (dark ? ink : 1 - ink));
-  });
+// As in a phonetics lab, louder is more ink: a ramp from the theme's paper
+// to its ink, three bytes per level.
+const probe = document.createElement("canvas").getContext("2d");
+
+function rgbOf(color) {
+  probe.fillStyle = "#000";
+  probe.fillStyle = color;
+  const hex = probe.fillStyle;
+  if (hex[0] === "#") return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  return hex.match(/\d+/g).slice(0, 3).map(Number);
 }
+
+function buildLut({ paper, ink }) {
+  const p = rgbOf(paper);
+  const k = rgbOf(ink);
+  const lut = new Uint8ClampedArray(256 * 3);
+  for (let i = 0; i < 256; i++) {
+    const t = Math.pow(i / 255, 1.6);
+    for (let c = 0; c < 3; c++) lut[i * 3 + c] = Math.round(p[c] + (k[c] - p[c]) * t);
+  }
+  return lut;
+}
+
+const figure = document.querySelector(".scope");
+if (figure) start(figure);

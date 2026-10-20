@@ -82,48 +82,34 @@ if (clock) {
 }
 
 // ==== Theme ================================================================
-// The switch remembers its choice, otherwise the system decides. The new
-// theme opens out from the switch in a circle.
+// The theme button opens a searchable list of two-colour themes
+// (js/palette.js, loaded on first use). The choice is applied before the
+// first paint by the script in the page head; without one, the system's
+// light or dark setting decides.
 
-const toggle = document.querySelector(".theme");
+const themeButton = document.querySelector(".theme");
 const systemDark = matchMedia("(prefers-color-scheme: dark)");
-const current = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
+const themeColors = document.querySelectorAll('meta[name="theme-color"]');
 
-function renderToggle() {
-  const next = current() === "dark" ? "light" : "dark";
-  toggle.firstElementChild.textContent = next === "dark" ? "Dark" : "Light";
-  toggle.dataset.current = current();
-  toggle.setAttribute("aria-label", `Switch to ${next} mode`);
+// Browser chrome follows the paper colour.
+function syncThemeColor() {
+  const paper = root.dataset.theme ? getComputedStyle(root).getPropertyValue("--paper").trim() : "";
+  themeColors.forEach((meta, i) => (meta.content = paper || (i ? "#000000" : "#ffffff")));
 }
 
-function setTheme(next) {
-  root.dataset.theme = next;
-  try {
-    localStorage.setItem("theme", next);
-  } catch {
-    // Blocked storage: the switch still works for this visit.
-  }
-  renderToggle();
-  window.dispatchEvent(new Event("themechange"));
-}
-
-if (toggle) {
-  toggle.addEventListener("click", () => {
-    const next = current() === "dark" ? "light" : "dark";
-    if (!document.startViewTransition || reducedMotion.matches) return setTheme(next);
-    const r = toggle.getBoundingClientRect();
-    root.style.setProperty("--reveal-x", `${r.left + r.width / 2}px`);
-    root.style.setProperty("--reveal-y", `${r.top + r.height / 2}px`);
-    window.dispatchEvent(new CustomEvent("themetransition", { detail: 900 }));
-    document.startViewTransition(() => setTheme(next));
+if (themeButton) {
+  themeButton.addEventListener("click", async () => {
+    const { openPalette } = await import("./palette.js?v=2");
+    openPalette();
   });
-  systemDark.addEventListener("change", () => {
-    renderToggle();
-    window.dispatchEvent(new Event("themechange"));
-  });
-  renderToggle();
-  toggle.hidden = false;
+  themeButton.hidden = false;
 }
+
+systemDark.addEventListener("change", () => {
+  if (!root.dataset.theme) window.dispatchEvent(new Event("themechange"));
+});
+addEventListener("themechange", syncThemeColor);
+syncThemeColor();
 
 // The outline of a masthead link lights up under the pointer.
 for (const el of document.querySelectorAll(".links > a, .links > button")) {
