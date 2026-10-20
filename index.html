@@ -46,7 +46,7 @@
 }
 </script>
 <link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=17">
+<link rel="stylesheet" href="css/site.css?v=18">
 </head>
 <body>
 <a class="skip" href="#now">Skip to content</a>
@@ -64,7 +64,7 @@
         </nav>
       </div>
       <h1 class="name">Ashutosh Adhikari</h1>
-      <p class="lede">I train and ship speech recognition models. On the side, I’m learning what sits underneath them: linear algebra and compute kernels.</p>
+      <p class="lede">I train and ship speech recognition models at BharatGen, IIT Bombay. On the side, I’m learning what sits underneath them: linear algebra and compute kernels.</p>
       <figure class="scope">
         <div class="scope-plot">
           <span class="scope-unit hz" aria-hidden="true">Hz</span>
@@ -94,13 +94,22 @@
   <div class="mark" id="now" style="--i: 1"></div>
   <section class="sheet section" style="--i: 1" aria-labelledby="now-title">
     <div class="wrap">
-      <a class="section-cap" href="#now"><h2 id="now-title">Now</h2><span>Updated October 2026</span></a>
+      <a class="section-cap" href="#now"><h2 id="now-title">Now</h2><span>October 2026</span></a>
       <div class="section-body">
-        <ul class="plain">
-          <li>Code-switched speech recognition at BharatGen: getting models to keep up when someone switches between Hindi and English mid-sentence.</li>
-          <li>Writing BLAS routines from scratch in C++, starting with axpy and working toward a multithreaded matrix multiply.</li>
-          <li>Taking Advanced Linear Algebra, my first course in UT Austin’s M.S. in Computer Science.</li>
-        </ul>
+        <dl class="rows">
+          <div class="row">
+            <dt>At work</dt>
+            <dd>Code-switched speech recognition at BharatGen: keeping a model accurate when the speaker changes language mid-sentence.</dd>
+          </div>
+          <div class="row">
+            <dt>On the side</dt>
+            <dd>BLAS from scratch in C++, from axpy up to a multithreaded matrix multiply.</dd>
+          </div>
+          <div class="row">
+            <dt>In school</dt>
+            <dd>Advanced Linear Algebra, my first course in UT Austin’s M.S. in Computer Science.</dd>
+          </div>
+        </dl>
       </div>
     </div>
   </section>
@@ -108,18 +117,27 @@
   <div class="mark" id="work" style="--i: 2"></div>
   <section class="sheet section" style="--i: 2" aria-labelledby="work-title">
     <div class="wrap">
-      <a class="section-cap" href="#work"><h2 id="work-title">Work</h2><span>BharatGen, IIT Bombay</span></a>
+      <a class="section-cap" href="#work"><h2 id="work-title">Work</h2><span>Speech recognition at BharatGen, from data to serving</span></a>
       <div class="section-body">
-        <article class="entry">
-          <h3>BharatGen, IIT Bombay</h3>
-          <p class="role">Generative AI Engineer</p>
-          <ul class="plain">
-            <li>Helped take <a href="https://huggingface.co/bharatgenai/Shrutam-2" target="_blank" rel="noopener">Shrutam-2</a>, BharatGen’s LLM-based speech recognizer, to production.</li>
-            <li>Designed the data filtering for a multi-terabyte multilingual speech corpus, built its manifest pipeline, and ran distributed training on it with NVIDIA NeMo.</li>
-            <li>Built a FastAPI inference service for a Conformer model with RNN-T decoding, fixed batched decoding bugs while moving it to ONNX, and load-tested it.</li>
-            <li>Worked on LLM-based correction of ASR output and on code-switched ASR. Both are now papers under review.</li>
-          </ul>
-        </article>
+        <p class="lead">Generative AI Engineer at BharatGen, IIT Bombay.</p>
+        <dl class="rows">
+          <div class="row">
+            <dt>Shipping</dt>
+            <dd>Helped take <a href="https://huggingface.co/bharatgenai/Shrutam-2" target="_blank" rel="noopener">Shrutam-2</a>, BharatGen’s LLM-based speech recognizer, to production.</dd>
+          </div>
+          <div class="row">
+            <dt>Data and training</dt>
+            <dd>Designed the filtering for a multi-terabyte speech corpus, built its manifest pipeline, and ran distributed training on it with NVIDIA NeMo.</dd>
+          </div>
+          <div class="row">
+            <dt>Serving</dt>
+            <dd>Built a FastAPI inference service for a Conformer model with RNN-T decoding, fixed batched decoding bugs while moving it to ONNX, and load-tested it.</dd>
+          </div>
+          <div class="row">
+            <dt>Research</dt>
+            <dd>LLM-based correction of ASR output, and code-switched ASR. Both are papers under review.</dd>
+          </div>
+        </dl>
       </div>
     </div>
   </section>
@@ -127,22 +145,31 @@
   <div class="mark" id="papers" style="--i: 3"></div>
   <section class="sheet section" style="--i: 3" aria-labelledby="papers-title">
     <div class="wrap">
-      <a class="section-cap" href="#papers"><h2 id="papers-title">Papers</h2><span>A book chapter, and two papers under review</span></a>
+      <a class="section-cap" href="#papers"><h2 id="papers-title">Papers</h2><span>Two under review, and a book chapter</span></a>
       <div class="section-body">
-        <ul class="plain">
-          <li class="paper">
-            <span class="title">Span-constrained mixture-of-experts for correcting ASR output with LLMs</span>
-            <span class="meta">Under review, EACL 2027 Industry Track</span>
-          </li>
-          <li class="paper">
-            <span class="title">A learnable router layer for low-rank mixture-of-experts in code-switched ASR</span>
-            <span class="meta">Under review, ICASSP 2027</span>
-          </li>
-          <li class="paper">
-            <a class="title" href="https://doi.org/10.1201/9781003422433-8" target="_blank" rel="noopener">Case Study: Streamlining Knowledge Acquisition through AI-Driven Summarization</a>
-            <span class="meta">Book chapter with Ananya Datta and Ami Munshi, in <em>Generative Artificial Intelligence Empowered Learning</em>, CRC Press, 2025</span>
-          </li>
-        </ul>
+        <dl class="rows">
+          <div class="row">
+            <dt>EACL 2027</dt>
+            <dd>
+              <span class="title">Span-constrained mixture-of-experts for correcting ASR output with LLMs</span>
+              <span class="meta">Under review, Industry Track</span>
+            </dd>
+          </div>
+          <div class="row">
+            <dt>ICASSP 2027</dt>
+            <dd>
+              <span class="title">A learnable router layer for low-rank mixture-of-experts in code-switched ASR</span>
+              <span class="meta">Under review</span>
+            </dd>
+          </div>
+          <div class="row">
+            <dt>CRC Press, 2025</dt>
+            <dd>
+              <a class="title" href="https://doi.org/10.1201/9781003422433-8" target="_blank" rel="noopener">Case Study: Streamlining Knowledge Acquisition through AI-Driven Summarization</a>
+              <span class="meta">Book chapter with Ananya Datta and Ami Munshi, in <em>Generative Artificial Intelligence Empowered Learning</em></span>
+            </dd>
+          </div>
+        </dl>
       </div>
     </div>
   </section>
@@ -152,14 +179,22 @@
     <div class="wrap">
       <a class="section-cap" href="#education"><h2 id="education-title">Education</h2><span>UT Austin, NMIMS</span></a>
       <div class="section-body">
-        <article class="entry">
-          <h3>University of Texas at Austin</h3>
-          <p class="role">M.S. in Computer Science. Started fall 2026.</p>
-        </article>
-        <article class="entry">
-          <h3>NMIMS, Mumbai</h3>
-          <p class="role">Computer Science &amp; Engineering (AI). Graduated 2025.</p>
-        </article>
+        <dl class="rows">
+          <div class="row">
+            <dt>2026 to now</dt>
+            <dd>
+              <span class="title">University of Texas at Austin</span>
+              <span class="meta">M.S. in Computer Science</span>
+            </dd>
+          </div>
+          <div class="row">
+            <dt>Graduated 2025</dt>
+            <dd>
+              <span class="title">NMIMS, Mumbai</span>
+              <span class="meta">Computer Science &amp; Engineering (AI)</span>
+            </dd>
+          </div>
+        </dl>
       </div>
         <footer class="colophon">
           <p class="clock" hidden></p>

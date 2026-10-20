@@ -324,46 +324,56 @@ a:hover {
   display: grid;
   grid-template-columns: var(--label) minmax(0, var(--measure));
   column-gap: 40px;
-  padding: 18px 0 clamp(64px, 10vh, 120px);
+  padding: 22px 0 clamp(64px, 11vh, 128px);
 }
 
 .section-body > * {
   grid-column: 2;
 }
 
-.plain {
+/* Rows read across: a short label in the left column, under the
+   section's name, and the detail beside it. */
+.section-body > .rows {
+  grid-column: 1 / -1;
+}
+
+.rows {
+  display: grid;
+  gap: 22px;
   margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.plain > li + li {
-  margin-top: 16px;
+.row {
+  display: grid;
+  grid-template-columns: var(--label) minmax(0, var(--measure));
+  column-gap: 40px;
+  align-items: baseline;
 }
 
-.entry + .entry {
-  margin-top: 36px;
+.row dt {
+  color: var(--graphite);
+  font-size: 0.9375rem;
+  font-weight: 500;
 }
 
-.entry h3 {
+.row dd {
   margin: 0;
-  font-size: 1.3125rem;
-  font-weight: 650;
-  line-height: 1.3;
 }
 
-.entry .role {
-  margin: 2px 0 16px;
+.lead {
+  margin: 0 0 26px;
   color: var(--graphite);
 }
 
-.paper .title {
+.row .title {
+  display: block;
   font-weight: 600;
+  line-height: 1.4;
 }
 
-.paper .meta {
+.row .meta {
   display: block;
-  margin-top: 4px;
+  margin-top: 3px;
   color: var(--graphite);
   font-size: 0.9375rem;
   line-height: 1.45;
@@ -438,15 +448,9 @@ a:hover {
     white-space: nowrap;
   }
 
-  /* On a phone each section is as tall as its content, so the next one
-     follows straight on instead of after a screen of blank paper. The
-     last one still fills the screen so the stack closes up. */
-  .section:not(:last-child) {
-    min-height: 0;
-  }
-
   .section-cap,
   .section-body,
+  .row,
   .colophon {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -457,6 +461,11 @@ a:hover {
 
   .section-body > * {
     grid-column: 1;
+  }
+
+  .row dt {
+    margin-bottom: 2px;
+    font-size: 0.875rem;
   }
 
   .section-cap span {
