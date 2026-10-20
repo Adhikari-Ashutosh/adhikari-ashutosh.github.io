@@ -14,7 +14,17 @@ let coveredAt = Infinity;
 let covered = false;
 let queued = false;
 
+// Each sheet's height, for its sticky offset in the stylesheet: a sheet
+// taller than the room under its tab sticks only once its end is on
+// screen, so nothing in it is ever out of reach.
+const sheets = [...document.querySelectorAll(".sheet")];
+
+function fit() {
+  for (const sheet of sheets) sheet.style.setProperty("--h", `${sheet.offsetHeight}px`);
+}
+
 function measure() {
+  fit();
   const cap = parseFloat(getComputedStyle(root).getPropertyValue("--cap")) || 56;
   coveredAt = firstMark ? firstMark.getBoundingClientRect().top + scrollY - cap : Infinity;
 }
@@ -25,13 +35,14 @@ function check() {
   const now = scrollY >= coveredAt - 1;
   if (now === covered) return;
   covered = now;
-  hero.classList.toggle("is-covered", covered);
+  root.classList.toggle("is-covered", covered);
   window.dispatchEvent(new CustomEvent("herocover", { detail: covered }));
 }
 
 if (hero) {
   measure();
   check();
+  document.fonts?.ready.then(measure);
   addEventListener("resize", () => {
     measure();
     check();
@@ -49,20 +60,20 @@ if (hero) {
 // Until the visitor has scrolled a fair way, the next sheet lifts and
 // springs back shortly after load and then every 9 to 14 seconds while the
 // page sits at the top.
-const nextSheet = document.querySelector(".section");
+const next = [document.querySelector(".tab:not(.masthead)"), document.querySelector(".section")].filter(Boolean);
 
-if (nextSheet && !reducedMotion.matches) {
+if (next.length && !reducedMotion.matches) {
   let done = false;
   const invite = () => {
     if (done) return;
     if (scrollY <= 8) {
-      nextSheet.classList.remove("is-inviting");
-      void nextSheet.offsetWidth;
-      nextSheet.classList.add("is-inviting");
+      for (const el of next) el.classList.remove("is-inviting");
+      void next[0].offsetWidth;
+      for (const el of next) el.classList.add("is-inviting");
     }
     setTimeout(invite, 9000 + Math.random() * 5000);
   };
-  nextSheet.addEventListener("animationend", () => nextSheet.classList.remove("is-inviting"));
+  next[0].addEventListener("animationend", () => next.forEach((el) => el.classList.remove("is-inviting")));
   addEventListener("scroll", () => (done ||= scrollY > innerHeight * 0.4), { passive: true });
   setTimeout(invite, 1800);
 }

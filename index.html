@@ -46,23 +46,25 @@
 }
 </script>
 <link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=21">
+<link rel="stylesheet" href="css/site.css?v=25">
 </head>
 <body>
 <a class="skip" href="#now">Skip to content</a>
 
 <main class="stack">
   <div class="mark" id="top" style="--i: 0"></div>
+  <div class="tab masthead" style="--i: 0">
+    <div class="wrap cap">
+      <a class="home" href="#top">Ashutosh Adhikari</a>
+      <nav class="links" aria-label="Elsewhere">
+        <a href="https://github.com/Adhikari-Ashutosh" data-tone="github" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/adhikari-ashutosh" data-tone="linkedin" target="_blank" rel="noopener">LinkedIn</a>
+        <button class="theme" type="button" aria-haspopup="dialog" hidden><span class="cards" aria-hidden="true"><i></i><i></i><i></i></span><span class="theme-label">Themes</span></button>
+      </nav>
+    </div>
+  </div>
   <header class="sheet hero" style="--i: 0">
     <div class="wrap">
-      <div class="cap">
-        <a class="home" href="#top">Ashutosh Adhikari</a>
-        <nav class="links" aria-label="Elsewhere">
-          <a href="https://github.com/Adhikari-Ashutosh" data-tone="github" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://www.linkedin.com/in/adhikari-ashutosh" data-tone="linkedin" target="_blank" rel="noopener">LinkedIn</a>
-          <button class="theme" type="button" aria-haspopup="dialog" hidden><span class="cards" aria-hidden="true"><i></i><i></i><i></i></span><span class="theme-label">Themes</span></button>
-        </nav>
-      </div>
       <h1 class="name">Ashutosh Adhikari</h1>
       <p class="lede">I train and ship speech recognition models at BharatGen, IIT Bombay. On the side, I’m learning what sits underneath them: linear algebra and compute kernels.</p>
       <figure class="scope">
@@ -92,9 +94,9 @@
   </header>
 
   <div class="mark" id="now" style="--i: 1"></div>
+  <a class="tab" href="#now" style="--i: 1"><div class="wrap section-cap"><h2 id="now-title">Now</h2><span>October 2026</span></div></a>
   <section class="sheet section" style="--i: 1" aria-labelledby="now-title">
     <div class="wrap">
-      <a class="section-cap" href="#now"><h2 id="now-title">Now</h2><span>October 2026</span></a>
       <div class="section-body">
         <dl class="rows">
           <div class="row">
@@ -115,9 +117,9 @@
   </section>
 
   <div class="mark" id="work" style="--i: 2"></div>
+  <a class="tab" href="#work" style="--i: 2"><div class="wrap section-cap"><h2 id="work-title">Work</h2><span>Speech recognition at BharatGen, from data to serving</span></div></a>
   <section class="sheet section" style="--i: 2" aria-labelledby="work-title">
     <div class="wrap">
-      <a class="section-cap" href="#work"><h2 id="work-title">Work</h2><span>Speech recognition at BharatGen, from data to serving</span></a>
       <div class="section-body">
         <p class="lead">Generative AI Engineer at BharatGen, IIT Bombay.</p>
         <dl class="rows">
@@ -143,9 +145,9 @@
   </section>
 
   <div class="mark" id="papers" style="--i: 3"></div>
+  <a class="tab" href="#papers" style="--i: 3"><div class="wrap section-cap"><h2 id="papers-title">Papers</h2><span>Two under review, and a book chapter</span></div></a>
   <section class="sheet section" style="--i: 3" aria-labelledby="papers-title">
     <div class="wrap">
-      <a class="section-cap" href="#papers"><h2 id="papers-title">Papers</h2><span>Two under review, and a book chapter</span></a>
       <div class="section-body">
         <dl class="rows">
           <div class="row">
@@ -175,9 +177,9 @@
   </section>
 
   <div class="mark" id="education" style="--i: 4"></div>
+  <a class="tab" href="#education" style="--i: 4"><div class="wrap section-cap"><h2 id="education-title">Education</h2><span>UT Austin, NMIMS</span></div></a>
   <section class="sheet section" style="--i: 4" aria-labelledby="education-title">
     <div class="wrap">
-      <a class="section-cap" href="#education"><h2 id="education-title">Education</h2><span>UT Austin, NMIMS</span></a>
       <div class="section-body">
         <dl class="rows">
           <div class="row">
@@ -199,8 +201,8 @@
         <footer class="colophon">
           <p class="clock" hidden></p>
           <div>
-            <p class="credit">The voice in the spectrogram is President John F. Kennedy, speaking on the nation’s space effort at Rice University in Houston on 12 September 1962. The recording was made by the White House Communications Agency and is in the public domain (<a href="https://www.jfklibrary.org/asset-viewer/archives/jfkwha-127-002" target="_blank" rel="noopener">JFK Library, JFKWHA-127-002</a>). This copy comes from <a href="https://commons.wikimedia.org/wiki/File:Jfk_rice_university_we_choose_to_go_to_the_moon.ogg" target="_blank" rel="noopener">Wikimedia Commons</a>. The word and phone tiers (phones in IPA) are a forced alignment made with <a href="https://github.com/cmusphinx/pocketsphinx" target="_blank" rel="noopener">CMU PocketSphinx</a>.</p>
-            <p>Plain HTML, CSS and JavaScript. No analytics, and nothing on this page loads from a third party.</p>
+            <p class="credit">The voice is President John F. Kennedy at Rice University, Houston, on 12 September 1962, recorded by the White House Communications Agency and in the public domain (<a href="https://www.jfklibrary.org/asset-viewer/archives/jfkwha-127-002" target="_blank" rel="noopener">JFK Library</a>). This copy is from <a href="https://commons.wikimedia.org/wiki/File:Jfk_rice_university_we_choose_to_go_to_the_moon.ogg" target="_blank" rel="noopener">Wikimedia Commons</a>. Words and pauses aligned with NVIDIA NeMo’s <a href="https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/stt_en_conformer_ctc_medium" target="_blank" rel="noopener">Conformer-CTC</a>, phones within each phrase with <a href="https://github.com/cmusphinx/pocketsphinx" target="_blank" rel="noopener">CMU PocketSphinx</a>.</p>
+            <p class="aside">Plain HTML, CSS and JavaScript. No analytics, and nothing on this page loads from a third party.</p>
             <p>Last updated 20 October 2026. © 2026 Ashutosh Adhikari. All rights reserved.</p>
           </div>
         </footer>
@@ -210,7 +212,7 @@
 
 
 
-<script type="module" src="js/site.js?v=10"></script>
+<script type="module" src="js/site.js?v=12"></script>
 <script type="module" src="js/spectrogram.js?v=9"></script>
 <script type="module" src="js/name.js?v=4"></script>
 </body>
