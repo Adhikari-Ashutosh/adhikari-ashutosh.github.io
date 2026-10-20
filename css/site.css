@@ -676,6 +676,22 @@ a:hover {
   background: currentColor;
 }
 
+.pill.pause::before {
+  content: "";
+  width: 8px;
+  height: 10px;
+  background: linear-gradient(90deg, currentColor 0 3px, transparent 3px 5px, currentColor 5px);
+}
+
+.pill.pause[aria-pressed="true"]::before {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+  background: none;
+}
+
 .pill.mic::before {
   content: "";
   width: 8px;
@@ -717,10 +733,17 @@ a:hover {
   .scope-foot {
     flex-wrap: nowrap;
     align-items: center;
+    column-gap: 12px;
     margin-top: 8px;
   }
 
+  .controls {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
   .legend .more,
+  .pill .more,
   .pill.mic,
   .status {
     display: none;
@@ -728,6 +751,15 @@ a:hover {
 
   .pill.play {
     padding: 9px 16px 9px 14px;
+  }
+
+  /* Pause is just its icon on a phone. */
+  .pill.pause {
+    padding: 9px 13px;
+  }
+
+  .pill.pause span {
+    display: none;
   }
 }
 

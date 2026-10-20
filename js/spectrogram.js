@@ -353,6 +353,7 @@ async function start(figure) {
   const canvas = figure.querySelector("canvas");
   const ctx = canvas.getContext("2d");
   const axis = (name) => figure.querySelector(`.scope-axis.${name}`);
+  const pauseButton = figure.querySelector(".pill.pause");
   const playButton = figure.querySelector(".pill.play");
   const micButton = figure.querySelector(".pill.mic");
   const status = figure.querySelector(".status");
@@ -693,8 +694,15 @@ async function start(figure) {
     button.textContent = on ? onText : offText;
   }
 
+  // "Play sound" shortens to "Play" on a phone.
+  function setPlay(on) {
+    playButton.setAttribute("aria-pressed", String(on));
+    playButton.innerHTML = `${on ? "Stop" : "Play"}<span class="more"> sound</span>`;
+  }
+
   async function play() {
     if (mode === "mic") stopMic();
+    if (paused) setPaused(false);
     playback.ctx ??= new AudioContext();
     const actx = playback.ctx;
     await actx.resume();
@@ -711,7 +719,7 @@ async function start(figure) {
     source.start(playback.start, clipPos / SR);
     playback.source = source;
     mode = "play";
-    setButton(playButton, true, "Stop sound", "Play sound");
+    setPlay(true);
     update();
   }
 
@@ -723,7 +731,7 @@ async function start(figure) {
     }
     playback.source = null;
     if (mode === "play") mode = "idle";
-    setButton(playButton, false, "Stop sound", "Play sound");
+    setPlay(false);
     update();
   }
 
@@ -758,7 +766,7 @@ async function start(figure) {
     }
     const resampler = new Resampler(actx.sampleRate);
     stream.reset();
-    const onSamples = (x) => mode === "mic" && stream.push(resampler.process(x), push);
+    const onSamples = (x) => mode === "mic" && !paused && stream.push(resampler.process(x), push);
     let node;
     try {
       await actx.audioWorklet.addModule(WORKLET_URL);
@@ -797,6 +805,20 @@ async function start(figure) {
     setButton(micButton, false, "Stop mic", "Use mic");
     status.textContent = "";
     update();
+  }
+
+  // Pause freezes the picture, and the sound with it, so the tracks can be
+  // read with the cursor at leisure.
+  let paused = false;
+
+  function setPaused(on) {
+    paused = on;
+    pauseButton.setAttribute("aria-pressed", String(on));
+    pauseButton.setAttribute("aria-label", on ? "Resume" : "Pause");
+    pauseButton.firstElementChild.textContent = on ? "Resume" : "Pause";
+    if (mode === "play") (on ? playback.ctx.suspend() : playback.ctx.resume()).catch(() => {});
+    update();
+    if (on) draw();
   }
 
   // Clock -------------------------------------------------------------------
@@ -840,7 +862,7 @@ async function start(figure) {
 
   function update() {
     const motion = mode !== "idle" || !reduced.matches;
-    const on = motion && visible && !covered && !document.hidden;
+    const on = !paused && motion && visible && !covered && !document.hidden;
     if (!motion) still();
     if (on === running) return;
     running = on;
@@ -914,13 +936,14 @@ async function start(figure) {
     clearTimeout(cursorTimer);
     pointAt(e);
   });
-  canvas.addEventListener("pointerup", (e) => e.pointerType !== "mouse" && (cursorTimer = setTimeout(clearCursor, 1600)));
+  canvas.addEventListener("pointerup", (e) => e.pointerType !== "mouse" && !paused && (cursorTimer = setTimeout(clearCursor, 1600)));
   canvas.addEventListener("pointercancel", clearCursor);
   canvas.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && clearCursor());
 
+  pauseButton.addEventListener("click", () => setPaused(!paused));
   playButton.addEventListener("click", () => (mode === "play" ? stopPlay() : play()));
   micButton.addEventListener("click", () => (mode === "mic" ? stopMic() : listen()));
-  playButton.hidden = micButton.hidden = false;
+  pauseButton.hidden = playButton.hidden = micButton.hidden = false;
   update();
 }
 
