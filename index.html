@@ -39,7 +39,7 @@
 }
 </script>
 <link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=9">
+<link rel="stylesheet" href="css/site.css?v=12">
 </head>
 <body>
 <a class="skip" href="#now">Skip to content</a>
@@ -53,7 +53,7 @@
         <nav class="links" aria-label="Elsewhere">
           <a href="https://github.com/Adhikari-Ashutosh" data-tone="github">GitHub</a>
           <a href="https://www.linkedin.com/in/adhikari-ashutosh" data-tone="linkedin">LinkedIn</a>
-          <button class="theme" type="button" hidden>Dark</button>
+          <button class="theme" type="button" hidden><span>Dark</span></button>
         </nav>
       </div>
       <h1 class="name">Ashutosh Adhikari</h1>
@@ -69,9 +69,9 @@
         </div>
         <div class="scope-foot">
           <ul class="legend">
-            <li><span class="key pitch" aria-hidden="true"></span>Pitch, right axis</li>
-            <li><span class="key formant" aria-hidden="true"></span>Formants, vocal-tract resonances</li>
-            <li><span class="key energy" aria-hidden="true"></span>Energy per mel band</li>
+            <li><span class="key pitch" aria-hidden="true"></span><span>Pitch<span class="more">, right axis</span></span></li>
+            <li><span class="key formant" aria-hidden="true"></span><span>Formants<span class="more">, vocal-tract resonances</span></span></li>
+            <li><span class="key energy" aria-hidden="true"></span><span>Energy<span class="more"> per mel band</span></span></li>
           </ul>
           <div class="controls">
             <button class="pill play" type="button" aria-pressed="false" hidden>Play sound</button>
@@ -167,7 +167,7 @@
 
 
 
-<script type="module" src="js/site.js?v=4"></script>
+<script type="module" src="js/site.js?v=6"></script>
 <script type="module" src="js/spectrogram.js?v=1"></script>
 <script type="module" src="js/name.js?v=1"></script>
 </body>

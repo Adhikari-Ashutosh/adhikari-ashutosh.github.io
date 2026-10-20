@@ -21,6 +21,7 @@ function measure() {
 
 function check() {
   queued = false;
+  root.classList.toggle("is-scrolled", scrollY > 0);
   const now = scrollY >= coveredAt - 1;
   if (now === covered) return;
   covered = now;
@@ -90,7 +91,7 @@ const current = () => root.dataset.theme || (systemDark.matches ? "dark" : "ligh
 
 function renderToggle() {
   const next = current() === "dark" ? "light" : "dark";
-  toggle.textContent = next === "dark" ? "Dark" : "Light";
+  toggle.firstElementChild.textContent = next === "dark" ? "Dark" : "Light";
   toggle.dataset.current = current();
   toggle.setAttribute("aria-label", `Switch to ${next} mode`);
 }
