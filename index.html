@@ -59,6 +59,7 @@
       <nav class="links" aria-label="Elsewhere">
         <a href="https://github.com/Adhikari-Ashutosh" data-tone="github" target="_blank" rel="noopener">GitHub</a>
         <a href="https://www.linkedin.com/in/adhikari-ashutosh" data-tone="linkedin" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="ashutosh-adhikari-cv.pdf" target="_blank" rel="noopener">CV</a>
         <button class="theme" type="button" aria-haspopup="dialog" hidden><span class="cards" aria-hidden="true"><i></i><i></i><i></i></span><span class="theme-label">Themes</span></button>
       </nav>
     </div>
@@ -101,11 +102,11 @@
         <dl class="rows">
           <div class="row">
             <dt>At work</dt>
-            <dd>Code-switched speech recognition at BharatGen: keeping a model accurate when the speaker changes language mid-sentence.</dd>
+            <dd>One 120M-parameter NEST FastConformer model that covers 22 languages and identifies the language on its own. It isn’t released yet, and I’m adding more capabilities to it.</dd>
           </div>
           <div class="row">
             <dt>On the side</dt>
-            <dd>BLAS from scratch in C++, from axpy up to a multithreaded matrix multiply.</dd>
+            <dd>BLAS from scratch in C++, starting from axpy and working up to multithreaded kernels.</dd>
           </div>
           <div class="row">
             <dt>In school</dt>
@@ -121,19 +122,23 @@
   <section class="sheet section" style="--i: 2" aria-labelledby="work-title">
     <div class="wrap">
       <div class="section-body">
-        <p class="lead">Generative AI Engineer at BharatGen, IIT Bombay.</p>
+        <p class="lead">Generative AI Engineer at BharatGen, IIT Bombay, since May 2025. Promoted from AI Software Engineer in November 2025.</p>
         <dl class="rows">
           <div class="row">
-            <dt>Shipping</dt>
-            <dd>Helped take <a href="https://huggingface.co/bharatgenai/Shrutam-2" target="_blank" rel="noopener">Shrutam-2</a>, BharatGen’s LLM-based speech recognizer, to production.</dd>
+            <dt>Released models</dt>
+            <dd>Contributed to <a href="https://huggingface.co/bharatgenai/Shrutam-2" target="_blank" rel="noopener">Shrutam-2</a>, BharatGen’s LLM-based speech recognizer. Co-trained Shrutam-HindiASR-1.0, an E-Branchformer model at 11.58 WER on Vistaar Hindi (13.6 for IndicWhisper), and wrote the ESPnet branch it runs inference on.</dd>
           </div>
           <div class="row">
             <dt>Data and training</dt>
-            <dd>Designed the filtering for a multi-terabyte speech corpus, built its manifest pipeline, and ran distributed training on it with NVIDIA NeMo.</dd>
+            <dd>Curated and quality-filtered 40,000+ hours of speech with WER-based scoring, and ran multi-GPU, multi-node training.</dd>
           </div>
           <div class="row">
             <dt>Serving</dt>
-            <dd>Built a FastAPI inference service for a Conformer model with RNN-T decoding, fixed batched decoding bugs while moving it to ONNX, and load-tested it.</dd>
+            <dd>Wrote inference servers for clients, with Silero VAD and batched inference.</dd>
+          </div>
+          <div class="row">
+            <dt>Evaluation</dt>
+            <dd>Built WER and CER evaluation pipelines across Whisper, Conformer and Branchformer models.</dd>
           </div>
           <div class="row">
             <dt>Research</dt>
@@ -153,15 +158,15 @@
           <div class="row">
             <dt>EACL 2027</dt>
             <dd>
-              <span class="title">Span-constrained mixture-of-experts for correcting ASR output with LLMs</span>
-              <span class="meta">Under review, Industry Track</span>
+              <span class="title">SpanMoE-ASR: Span-Constrained Mixture-of-Experts for Controllable Indic ASR Post-Correction</span>
+              <span class="meta">I. Palicha, <b>A. V. Adhikari</b>, R. Kumar, S. Santhiappan, G. Ramakrishnan. Under review, Industry Track</span>
             </dd>
           </div>
           <div class="row">
             <dt>ICASSP 2027</dt>
             <dd>
-              <span class="title">A learnable router layer for low-rank mixture-of-experts in code-switched ASR</span>
-              <span class="meta">Under review</span>
+              <span class="title">A Learnable Router Layer for Low-Rank Mixture-of-Experts in Hindi-English Code-Switching ASR</span>
+              <span class="meta">N. Mandloi, M. Kopikar, A. Singh, <b>A. Adhikari</b>, K. C. Narendra. Under review</span>
             </dd>
           </div>
           <div class="row">
@@ -192,8 +197,8 @@
           <div class="row">
             <dt>Graduated 2025</dt>
             <dd>
-              <span class="title">NMIMS, Mumbai</span>
-              <span class="meta">Computer Science &amp; Engineering (AI)</span>
+              <span class="title">NMIMS MPSTME</span>
+              <span class="meta">B.Tech (Hons.), Artificial Intelligence. GPA 3.77 / 4.0, Dean’s List</span>
             </dd>
           </div>
         </dl>

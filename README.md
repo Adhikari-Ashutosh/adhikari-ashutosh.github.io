@@ -26,18 +26,19 @@ and nothing loads from a third party.
 ## Layout
 
 ```
-index.html          the page
-404.html            the not-found page
-css/site.css        all of the styles
-js/site.js          sheet stack, clock, theme button, link outlines
-js/spectrogram.js   the plot, its tiers and readout, sound and microphone
-js/dsp.js           the analysis: log-mel features, pitch, formants, resampling
-js/analyser.js      a worker that runs the analysis off the main thread
-js/capture.js       AudioWorklet that hands microphone samples to the worker
-js/name.js          the name in WebGL
-js/palette.js       the theme palette and its themes
-audio/              the speech clip (FLAC) and its word and phone timings
-fonts/              Bricolage Grotesque
+index.html                the page
+404.html                  the not-found page
+css/site.css              all of the styles
+js/site.js                sheet stack, clock, theme button, link outlines
+js/spectrogram.js         the plot, its tiers and readout, sound and microphone
+js/dsp.js                 the analysis: log-mel features, pitch, formants, resampling
+js/analyser.js            a worker that runs the analysis off the main thread
+js/capture.js             AudioWorklet that hands microphone samples to the worker
+js/name.js                the name in WebGL
+js/palette.js             the theme palette and its themes
+audio/                    the speech clip (FLAC) and its word and phone timings
+ashutosh-adhikari-cv.pdf  the CV
+fonts/                    Bricolage Grotesque
 ```
 
 ## Running it locally
