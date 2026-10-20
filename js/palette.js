@@ -203,15 +203,17 @@ function save(entry) {
 }
 
 // Changes of theme glide: the five colours move from where they are to
-// the new theme's over a second, at 30 steps a second (every other frame
-// on most screens), so it reads as smooth without restyling the page on
-// every frame, and nothing ever flashes. A preview starts once the pointer or the arrow keys rest on a
+// the new theme's over a second, as smoothly as the device allows: a
+// step every frame to start with, and every second, third or fourth frame
+// if steps start making frames late, easing back as frames recover. What
+// it learns carries over to the next glide. Nothing ever flashes. A preview starts once the pointer or the arrow keys rest on a
 // theme for a moment, and a new one picks up from wherever the colours
 // are, so sweeping down the list just steers the glide. With reduced
 // motion, changes are instant but at least 0.6 s apart.
 const SETTLE = 260;
 const GLIDE = 1000;
-const STEP_MS = 1000 / 30;
+let every = 1; // frames per step, adapted to the device
+let calm = 0; // on-time steps in a row
 const GAP = 600;
 const BUILT = {
   light: { paper: "#ffffff", ink: "#000000", graphite: "#5d5d66", hairline: "#dedee4", lift: "rgba(0, 0, 0, 0.32)" },
@@ -259,11 +261,29 @@ function glide(entry) {
   const to = Object.fromEntries(TOKENS.map((k) => [k, rgba(goal[k])]));
   const start = performance.now();
   shown = entry.id;
-  let last = 0;
+  let frame = 0;
+  let prev = 0;
+  let frameMs = 1000 / 60;
+  let stepped = false;
   const step = (now = performance.now()) => {
     ticker = requestAnimationFrame(step);
-    if (now - last < STEP_MS - 2) return;
-    last = now;
+    const dt = prev ? now - prev : 0;
+    prev = now;
+    if (dt) {
+      // Track the display's frame time from frames without a step, and
+      // judge each step by how late the frame after it came.
+      if (!stepped) frameMs = Math.min(frameMs, dt) * 0.9 + dt * 0.1;
+      else if (dt > frameMs * 1.6) {
+        every = Math.min(4, every + 1);
+        calm = 0;
+      } else if (++calm > 8 && every > 1) {
+        every--;
+        calm = 0;
+      }
+    }
+    stepped = false;
+    if (frame++ % every) return;
+    stepped = true;
     const t = Math.min(1, (now - start) / GLIDE);
     if (t >= 1) {
       cancelAnimationFrame(ticker);

@@ -921,7 +921,10 @@ async function start(figure) {
       const t0 = performance.now();
       draw();
       cost = 0.9 * cost + 0.1 * (performance.now() - t0);
+      // Halve the drawing rate when frames get expensive, and go back to
+      // full rate once they are cheap again (never on low-end devices).
       if (cost > 7) halfRate = true;
+      else if (cost < 3.5 && !LOW_END) halfRate = false;
     }
     requestAnimationFrame(frame);
   }
