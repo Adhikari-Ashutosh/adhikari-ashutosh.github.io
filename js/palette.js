@@ -405,8 +405,14 @@ function build() {
     if (li) choose(Number(li.dataset.index));
   });
 
-  // A click outside the panel lands on the dialog itself.
-  dialog.addEventListener("click", (e) => e.target === dialog && dialog.close());
+  // A click outside the panel lands on the dialog itself (its backdrop):
+  // close and go back to the theme you had. Checking the position as well
+  // keeps a click on the panel's own edge from closing it.
+  dialog.addEventListener("click", (e) => {
+    if (e.target !== dialog) return;
+    const r = dialog.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close();
+  });
   dialog.addEventListener("close", () => {
     clearTimeout(timer);
     glide(byId(committed));
