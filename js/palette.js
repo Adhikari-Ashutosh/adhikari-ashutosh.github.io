@@ -218,8 +218,8 @@ function save(entry) {
 }
 
 // A preview waits until the pointer or the arrow keys settle on a theme
-// for a moment, and the colours then fade across (see the stylesheet), so
-// sweeping down the list never strobes the page.
+// for a moment, then crossfades in (see the stylesheet), so sweeping down
+// the list never strobes the page.
 const SETTLE = 140;
 let wanted = null;
 let timer = 0;
@@ -227,17 +227,23 @@ let timer = 0;
 function preview(entry) {
   wanted = entry;
   clearTimeout(timer);
-  timer = setTimeout(() => wanted && wanted.id !== shown && apply(wanted), SETTLE);
+  timer = setTimeout(() => wanted && wanted.id !== shown && fade(wanted), SETTLE);
 }
+
+function transition(kind, ms, entry) {
+  if (!document.startViewTransition || reducedMotion.matches) return apply(entry);
+  root.classList.add(kind);
+  window.dispatchEvent(new CustomEvent("themetransition", { detail: ms }));
+  document.startViewTransition(() => apply(entry)).finished.finally(() => root.classList.remove(kind));
+}
+
+const fade = (entry) => transition("is-fading", 450, entry);
 
 // A tap opens the new theme out from the finger, like the old switch.
 function reveal(x, y, entry) {
-  if (!document.startViewTransition || reducedMotion.matches) return apply(entry);
   root.style.setProperty("--reveal-x", `${x}px`);
   root.style.setProperty("--reveal-y", `${y}px`);
-  root.classList.add("is-revealing");
-  window.dispatchEvent(new CustomEvent("themetransition", { detail: 900 }));
-  document.startViewTransition(() => apply(entry)).finished.finally(() => root.classList.remove("is-revealing"));
+  transition("is-revealing", 900, entry);
 }
 
 // ==== Palette ==============================================================
@@ -351,7 +357,7 @@ function build() {
   dialog.addEventListener("click", (e) => e.target === dialog && dialog.close());
   dialog.addEventListener("close", () => {
     clearTimeout(timer);
-    if (shown !== committed) apply(byId(committed));
+    if (shown !== committed) fade(byId(committed));
   });
 }
 

@@ -532,16 +532,9 @@ function start(heading) {
       }, 60);
     }).observe(heading);
 
-    // Follow the colours while a new theme fades in.
-    let fadeUntil = 0;
-    let fading = 0;
     window.addEventListener("themechange", () => {
-      fadeUntil = performance.now() + 700;
-      fading ||= requestAnimationFrame(function step(now) {
-        readColors();
-        if (!raf) render();
-        fading = now < fadeUntil ? requestAnimationFrame(step) : 0;
-      });
+      readColors();
+      render();
     });
   });
 

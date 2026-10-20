@@ -9,38 +9,6 @@
   font-display: swap;
 }
 
-/* The colours are registered so a change of theme fades over the whole
-   page instead of flashing. */
-@property --paper {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #ffffff;
-}
-
-@property --ink {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #000000;
-}
-
-@property --graphite {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #5d5d66;
-}
-
-@property --hairline {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #dedee4;
-}
-
-@property --lift {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: rgba(0, 0, 0, 0.32);
-}
-
 :root {
   --paper: #ffffff;
   --ink: #000000;
@@ -56,11 +24,6 @@
   --cap: 56px;
 
   color-scheme: light;
-  transition: --paper 600ms ease, --ink 600ms ease, --graphite 600ms ease, --hairline 600ms ease, --lift 600ms ease;
-}
-
-:root.is-revealing {
-  transition: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -151,10 +114,6 @@ a:hover {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  :root {
-    transition: none;
   }
 
   .section.is-inviting {
@@ -956,15 +915,32 @@ a:hover {
   }
 }
 
-/* On a touchscreen a new theme opens out from the finger in a circle. */
+/* A new theme crossfades in as one picture, which the compositor animates
+   without repainting the page each frame. On a touchscreen it opens out
+   from the finger in a circle instead. The page stays interactive while
+   it happens. */
+::view-transition {
+  pointer-events: none;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-::view-transition-new(root) {
+:root.is-fading::view-transition-new(root) {
+  animation: fade-in 420ms ease both;
+}
+
+:root.is-revealing::view-transition-new(root) {
   animation: reveal 850ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 @keyframes reveal {

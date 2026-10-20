@@ -3,8 +3,10 @@
 // pre-emphasis 0.97, 25 ms Hann windows every 10 ms, a 512-point FFT and 80
 // Slaney mel bands up to 8 kHz, as log power), plus pitch from normalised
 // cross-correlation and formants from an LPC envelope, and scrolls them in a
-// Praat-style plot. It loops a LibriSpeech clip, plays it out loud on
-// request, or listens to the microphone.
+// Praat-style plot with two annotation tiers. It loops a passage from
+// President Kennedy's 1962 speech at Rice University, with its words and
+// phones as forced-aligned tiers, plays it out loud on request, or listens
+// to the microphone.
 
 const SR = 16000;
 const WIN = 400;
@@ -13,11 +15,14 @@ const NFFT = 512;
 const NMELS = 80;
 const PREEMPH = 0.97;
 
-const CLIP_URL = new URL("../audio/chivalry.pcm", import.meta.url);
+const CLIP_URL = new URL("../audio/rice.flac", import.meta.url);
+const TIMING_URL = new URL("../audio/rice.json", import.meta.url);
 const WORKLET_URL = new URL("capture.js" + new URL(import.meta.url).search, import.meta.url);
 const CAP = 1400; // frames kept, 14 s
 const RANGE_DB = 70; // dynamic range shown, as in Praat
 const TIER_H = 24;
+// Phones are written in IPA, which needs a font with those letters.
+const IPA_FONT = 'ui-sans-serif, system-ui, "Segoe UI", Roboto, "Noto Sans", "DejaVu Sans", sans-serif';
 const PITCH_LO = 75; // pitch axis, log scale
 const PITCH_HI = 500;
 const MIN_RUN = 6; // shortest voiced stretch drawn, in frames
@@ -233,7 +238,7 @@ class Stream {
     this.fe = fe;
     this.raw = new Float32Array(1 << 15);
     this.pe = new Float32Array(1 << 15);
-    this.out = { db: new Float32Array(NMELS), ref: 0, f0: 0, fm: new Float32Array(4), speech: false };
+    this.out = { db: new Float32Array(NMELS), ref: 0, f0: 0, fm: new Float32Array(4), speech: false, at: 0 };
     this.reset();
   }
 
@@ -262,6 +267,7 @@ class Stream {
       this.prev = x[i];
     }
     while (this.next + PITCH_WIN / 2 <= this.base + this.len) {
+      this.out.at = this.next;
       onFrame(this.frame(this.next - this.base));
       this.next += HOP;
     }
@@ -359,15 +365,45 @@ async function start(figure) {
   const status = figure.querySelector(".status");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
-  // The clip, with a short pause before it loops.
+  // The clip, with a short pause before it loops (a whole number of hops,
+  // so every pass lands its frames on the same samples), and the times of
+  // its words and phones.
   let clip;
+  let timing = { words: [], phones: [] };
   try {
-    const pcm = new Int16Array(await (await fetch(CLIP_URL)).arrayBuffer());
-    clip = new Float32Array(pcm.length + Math.round(0.7 * SR));
-    for (let i = 0; i < clip.length; i++) clip[i] = (i < pcm.length ? pcm[i] / 32768 : 0) + (Math.random() - 0.5) * 2e-5;
+    // FLAC is lossless and has no encoder delay, so the samples, and the
+    // timings with them, come back exactly; decoding at 16 kHz skips any
+    // resampling.
+    const [audio, times] = await Promise.all([fetch(CLIP_URL), fetch(TIMING_URL)]);
+    const decoded = await new OfflineAudioContext(1, 1, SR).decodeAudioData(await audio.arrayBuffer());
+    const pcm = decoded.getChannelData(0);
+    clip = new Float32Array(Math.ceil((pcm.length + 0.7 * SR) / HOP) * HOP);
+    for (let i = 0; i < clip.length; i++) clip[i] = (i < pcm.length ? pcm[i] : 0) + (Math.random() - 0.5) * 2e-5;
+    timing = await times.json().catch(() => timing);
   } catch {
     return;
   }
+
+  // The word and phone under each frame of the clip, by frame centre. With
+  // the microphone the tiers mark speech and voicing instead.
+  const SPEECH = 1000;
+  const VOICED = 1001;
+  const steps = clip.length / HOP;
+  const wordAt = new Int16Array(steps).fill(-1);
+  const phoneAt = new Int16Array(steps).fill(-1);
+  for (const [list, into] of [[timing.words, wordAt], [timing.phones, phoneAt]]) {
+    list.forEach(([from, to], id) => {
+      for (let k = Math.ceil((from * SR) / HOP); k < Math.min(steps, (to * SR) / HOP); k++) into[k] = id;
+    });
+  }
+  const tierText = (id, list) => (id === SPEECH ? "speech" : id === VOICED ? "voiced" : list[id][2]);
+  // Label widths, measured once: measuring text every frame adds up.
+  const widths = new Map();
+  const widthOf = (font, text) => {
+    let w = widths.get(font + text);
+    if (w === undefined) widths.set(font + text, (w = ctx.measureText(text).width));
+    return w;
+  };
 
   const fe = new FrontEnd();
   const stream = new Stream(fe);
@@ -378,7 +414,8 @@ async function start(figure) {
     ref: new Float32Array(CAP),
     f0: new Float32Array(CAP),
     fm: new Float32Array(CAP * 4),
-    speech: new Uint8Array(CAP),
+    words: new Int16Array(CAP).fill(-1),
+    phones: new Int16Array(CAP).fill(-1),
   };
   let head = 0; // frames pushed so far
   let pending = 0; // pushed but not yet painted
@@ -398,7 +435,14 @@ async function start(figure) {
     ring.ref[slot] = f.ref;
     ring.f0[slot] = f.f0;
     ring.fm.set(f.fm, slot * 4);
-    ring.speech[slot] = f.speech ? 1 : 0;
+    if (mode === "mic") {
+      ring.words[slot] = f.speech ? SPEECH : -1;
+      ring.phones[slot] = f.f0 > 0 ? VOICED : -1;
+    } else {
+      const k = (f.at % clip.length) / HOP;
+      ring.words[slot] = wordAt[k];
+      ring.phones[slot] = phoneAt[k];
+    }
     head++;
     pending++;
   };
@@ -434,8 +478,7 @@ async function start(figure) {
 
   // Layout ----------------------------------------------------------------
 
-  const view = { w: 0, h: 0, spec: 0, frames: 600, dpr: 1, shift: 0 };
-  let tierName = "voice";
+  const view = { w: 0, h: 0, spec: 0, tiers: 2, frames: 600, dpr: 1, shift: 0 };
   let cursor = null;
 
   const bandY = (b) => view.spec * (1 - (b + 0.5) / NMELS);
@@ -446,11 +489,13 @@ async function start(figure) {
     const r = canvas.getBoundingClientRect();
     view.w = r.width;
     view.h = r.height;
-    view.spec = view.h - TIER_H;
+    // Phones need room; a narrow plot keeps just the words.
+    view.tiers = view.w < 520 ? 1 : 2;
+    view.spec = view.h - view.tiers * TIER_H;
     view.dpr = Math.min(LOW_END ? 1.25 : 2, devicePixelRatio || 1);
     canvas.width = Math.round(view.w * view.dpr);
     canvas.height = Math.round(view.h * view.dpr);
-    view.frames = Math.max(280, Math.min(CAP - 2, Math.round(view.w / (view.w < 640 ? 0.85 : 2))));
+    view.frames = Math.max(200, Math.min(CAP - 2, Math.round(view.w / (view.w < 640 ? 1.4 : 2.6))));
     labelAxes();
   }
 
@@ -466,7 +511,9 @@ async function start(figure) {
     const clampY = (y) => Math.max(0, Math.min(view.spec, y));
     axis("hz").replaceChildren(
       ...[[8000, "8k"], [4000, "4k"], [2000, "2k"], [1000, "1k"], [500, "500"]].map(([f, t]) => label(t, clampY(bandY(hzToBand(f))))),
-      label(tierName, view.spec + TIER_H / 2, "top", "tier"),
+      ...(mode === "mic" ? ["you", "voiced"] : ["words", "phones"])
+        .slice(0, view.tiers)
+        .map((name, i) => label(name, view.spec + (i + 0.5) * TIER_H, "top", "tier")),
     );
     axis("pitch").replaceChildren(...[500, 300, 200, 100].map((f) => label(String(f), pitchY(f))));
     const ppf = view.w / view.frames;
@@ -566,50 +613,59 @@ async function start(figure) {
     }
     ctx.restore();
 
-    drawTier(right, ppf, visible);
+    drawTier(ring.words, timing.words, spec, right, ppf, visible, `500 12px ${colors.font}`);
+    if (view.tiers > 1) drawTier(ring.phones, timing.phones, spec + TIER_H, right, ppf, visible, `400 12px ${IPA_FONT}`);
     ctx.strokeStyle = colors.ink;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.rect(0.5, 0.5, w - 1, view.h - 1);
-    ctx.moveTo(0, spec + 0.5);
-    ctx.lineTo(w, spec + 0.5);
+    for (let i = 0; i < view.tiers; i++) {
+      ctx.moveTo(0, spec + i * TIER_H + 0.5);
+      ctx.lineTo(w, spec + i * TIER_H + 0.5);
+    }
     ctx.stroke();
     if (cursor) drawCursor(right, ppf, visible);
   }
 
-  // One annotation tier: stretches of detected speech.
-  function drawTier(right, ppf, visible) {
-    const top = view.spec;
+  // One annotation tier, as in a Praat TextGrid: an interval for each run
+  // of frames with the same label, bounded by thin lines, with the label
+  // written in when it fits.
+  function drawTier(ids, list, top, right, ppf, visible, font) {
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, top, view.w, TIER_H);
     ctx.clip();
-    ctx.font = `500 12px ${colors.font}`;
+    ctx.font = font;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.strokeStyle = colors.graphite;
     ctx.lineWidth = 1;
+    ctx.beginPath();
+    const spans = [];
+    let id = -1;
     let start = -1;
     for (let age = visible - 1; age >= -1; age--) {
-      const on = age >= 0 && ring.speech[(head - 1 - age) % CAP];
-      if (on && start < 0) start = age;
-      if (!on && start >= 0) {
+      const cur = age >= 0 ? ids[(head - 1 - age) % CAP] : -1;
+      if (cur === id) continue;
+      if (id >= 0) {
         const x0 = right - (start + 1) * ppf;
         const x1 = right - (age + 1) * ppf;
-        ctx.beginPath();
         for (const x of [x0, x1]) {
           ctx.moveTo(Math.round(x) + 0.5, top);
           ctx.lineTo(Math.round(x) + 0.5, top + TIER_H);
         }
-        ctx.stroke();
-        const a = Math.max(x0, 0);
-        const b = Math.min(x1, view.w);
-        if (b - a > 50) {
-          ctx.fillStyle = colors.ink;
-          ctx.fillText("speech", (a + b) / 2, top + TIER_H / 2 + 0.5);
-        }
-        start = -1;
+        spans.push(id, x0, x1);
       }
+      id = cur;
+      start = age;
+    }
+    ctx.stroke();
+    ctx.fillStyle = colors.ink;
+    for (let i = 0; i < spans.length; i += 3) {
+      const a = Math.max(spans[i + 1], 0);
+      const b = Math.min(spans[i + 2], view.w);
+      const text = tierText(spans[i], list);
+      if (b - a > widthOf(font, text) + 3) ctx.fillText(text, (a + b) / 2, top + TIER_H / 2 + 0.5);
     }
     ctx.restore();
   }
@@ -618,15 +674,30 @@ async function start(figure) {
   function drawCursor(right, ppf, visible) {
     const { x, y } = cursor;
     const age = Math.floor((right - x) / ppf);
-    if (age < 0 || age >= visible || y < 0 || y > view.spec) return;
+    if (age < 0 || age >= visible || y < 0 || y > view.h) return;
     const slot = (head - 1 - age) % CAP;
-    const level = ring.db[slot * NMELS + Math.max(0, Math.min(NMELS - 1, Math.round(yBand(y))))] - ring.ref[slot];
-    const lines = [
-      `${Math.round(bandToHz(yBand(y)) / 10) * 10} Hz`,
-      Number.isFinite(level) ? `${level < 0 ? "−" : ""}${Math.abs(Math.round(level))} dB` : "silence",
-      age < 3 ? "now" : `${(age / 100).toFixed(2)} s ago`,
-    ];
-    if (runs[age]) {
+    // Where the word and phone under the cursor sit in the clip.
+    const spans = [];
+    const at = (kind, list, id) => {
+      if (id < 0 || id >= SPEECH) return;
+      const [from, to, text] = list[id];
+      spans.push(`${kind}: ${kind === "phone" ? `/${text}/` : text}, ${from.toFixed(2)}–${to.toFixed(2)} s`);
+    };
+    at("word", timing.words, ring.words[slot]);
+    at("phone", timing.phones, ring.phones[slot]);
+    const lines = [];
+    if (y > view.spec) {
+      if (!spans.length) return;
+      lines.push(...spans);
+    } else {
+      const level = ring.db[slot * NMELS + Math.max(0, Math.min(NMELS - 1, Math.round(yBand(y))))] - ring.ref[slot];
+      lines.push(
+        `${Math.round(bandToHz(yBand(y)) / 10) * 10} Hz`,
+        Number.isFinite(level) ? `${level < 0 ? "−" : ""}${Math.abs(Math.round(level))} dB` : "silence",
+        age < 3 ? "now" : `${(age / 100).toFixed(2)} s ago`,
+      );
+    }
+    if (y <= view.spec && runs[age]) {
       const f0 = ring.f0[slot];
       let nearest = -1;
       let gap = 10;
@@ -639,6 +710,7 @@ async function start(figure) {
       else if (Math.abs(pitchY(Math.max(PITCH_LO, Math.min(PITCH_HI, f0))) - y) < 10) lines.unshift(`pitch: ${Math.round(f0)} Hz`);
       if (!lines[0].startsWith("pitch")) lines.push(`pitch ${Math.round(f0)} Hz`);
     }
+    if (y <= view.spec) lines.push(...spans.map((l) => l.replace(": ", " ")));
 
     ctx.save();
     ctx.strokeStyle = colors.ink;
@@ -656,7 +728,7 @@ async function start(figure) {
     const bw = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 16;
     const bh = lines.length * 16 + 10;
     const bx = x + 12 + bw > view.w ? x - 12 - bw : x + 12;
-    const by = y + 12 + bh > view.spec ? y - 12 - bh : y + 12;
+    const by = Math.max(0, y + 12 + bh > view.spec ? y - 12 - bh : y + 12);
     ctx.fillStyle = colors.paper;
     ctx.fillRect(bx, by, bw, bh);
     ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, bh - 1);
@@ -782,7 +854,6 @@ async function start(figure) {
     await actx.resume();
     Object.assign(mic, { ctx: actx, stream: media, node });
     mode = "mic";
-    tierName = "you";
     labelAxes();
     micButton.disabled = false;
     setButton(micButton, true, "Stop mic", "Use mic");
@@ -800,7 +871,6 @@ async function start(figure) {
       stream.reset();
       clipPos = 0;
     }
-    tierName = "voice";
     labelAxes();
     setButton(micButton, false, "Stop mic", "Use mic");
     status.textContent = "";
@@ -905,18 +975,11 @@ async function start(figure) {
   addEventListener("themetransition", (e) => {
     pausedUntil = performance.now() + e.detail;
   });
-  // Follow the colours while a new theme fades in.
-  let fadeUntil = 0;
-  let fading = 0;
   addEventListener("themechange", () => {
-    fadeUntil = performance.now() + 700;
-    fading ||= requestAnimationFrame(function step(now) {
-      colors = readColors();
-      lut = buildLut(colors);
-      repaint();
-      if (!running) draw();
-      fading = now < fadeUntil ? requestAnimationFrame(step) : 0;
-    });
+    colors = readColors();
+    lut = buildLut(colors);
+    repaint();
+    draw();
   });
   document.addEventListener("visibilitychange", update);
   reduced.addEventListener("change", update);
