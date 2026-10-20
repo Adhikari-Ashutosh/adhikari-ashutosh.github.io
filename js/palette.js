@@ -203,14 +203,15 @@ function save(entry) {
 }
 
 // Changes of theme glide: the five colours move from where they are to
-// the new theme's over a second, in eight small steps, so the page
-// restyles eight times rather than every frame and nothing ever flashes. A preview starts once the pointer or the arrow keys rest on a
+// the new theme's over a second, at 30 steps a second (every other frame
+// on most screens), so it reads as smooth without restyling the page on
+// every frame, and nothing ever flashes. A preview starts once the pointer or the arrow keys rest on a
 // theme for a moment, and a new one picks up from wherever the colours
 // are, so sweeping down the list just steers the glide. With reduced
 // motion, changes are instant but at least 0.6 s apart.
 const SETTLE = 260;
 const GLIDE = 1000;
-const STEPS = 8;
+const STEP_MS = 1000 / 30;
 const GAP = 600;
 const BUILT = {
   light: { paper: "#ffffff", ink: "#000000", graphite: "#5d5d66", hairline: "#dedee4", lift: "rgba(0, 0, 0, 0.32)" },
@@ -243,7 +244,7 @@ function preview(entry) {
 
 function glide(entry) {
   if (entry.id === shown) return;
-  clearInterval(ticker);
+  cancelAnimationFrame(ticker);
   if (reducedMotion.matches) {
     const wait = Math.max(0, lastInstant + GAP - performance.now());
     timer = setTimeout(() => {
@@ -258,10 +259,14 @@ function glide(entry) {
   const to = Object.fromEntries(TOKENS.map((k) => [k, rgba(goal[k])]));
   const start = performance.now();
   shown = entry.id;
-  const step = () => {
-    const t = Math.min(1, (performance.now() - start) / GLIDE);
+  let last = 0;
+  const step = (now = performance.now()) => {
+    ticker = requestAnimationFrame(step);
+    if (now - last < STEP_MS - 2) return;
+    last = now;
+    const t = Math.min(1, (now - start) / GLIDE);
     if (t >= 1) {
-      clearInterval(ticker);
+      cancelAnimationFrame(ticker);
       apply(entry);
       return;
     }
@@ -272,7 +277,6 @@ function glide(entry) {
     }
     window.dispatchEvent(new Event("themechange"));
   };
-  ticker = setInterval(step, GLIDE / STEPS);
   step();
 }
 
