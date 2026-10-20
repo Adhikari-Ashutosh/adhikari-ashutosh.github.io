@@ -468,11 +468,13 @@ async function start(figure) {
     ictx.putImageData(strip, CAP - newest - count, 0, 0, 0, count, NMELS);
   }
 
+  // Repaints only what can still be seen: the plot only ever shows the
+  // newest columns, and anything older has scrolled out for good.
   function repaint() {
     pending = 0;
+    const count = Math.min(head, CAP, view.frames + 2);
     ictx.fillStyle = `rgb(${lut[0]}, ${lut[1]}, ${lut[2]})`;
     ictx.fillRect(0, 0, CAP, NMELS);
-    const count = Math.min(head, CAP);
     for (let done = 0; done < count; done += 256) paint(done, Math.min(256, count - done));
   }
 
@@ -891,7 +893,6 @@ async function start(figure) {
   let running = false;
   let visible = true;
   let covered = false;
-  let pausedUntil = 0;
   let halfRate = LOW_END;
   let skip = false;
   let cost = 0;
@@ -915,8 +916,8 @@ async function start(figure) {
     } else {
       view.shift = 0;
     }
-    // Sit out theme transitions; on slow machines draw every other frame.
-    if (now >= pausedUntil && !(halfRate && (skip = !skip))) {
+    // On slow machines, draw every other frame.
+    if (!(halfRate && (skip = !skip))) {
       const t0 = performance.now();
       draw();
       cost = 0.9 * cost + 0.1 * (performance.now() - t0);
@@ -957,6 +958,7 @@ async function start(figure) {
 
   new ResizeObserver(() => {
     layout();
+    repaint();
     if (!running) draw();
   }).observe(canvas);
   new IntersectionObserver(([e]) => {
@@ -966,9 +968,6 @@ async function start(figure) {
   addEventListener("herocover", (e) => {
     covered = e.detail;
     update();
-  });
-  addEventListener("themetransition", (e) => {
-    pausedUntil = performance.now() + e.detail;
   });
   addEventListener("themechange", () => {
     colors = readColors();

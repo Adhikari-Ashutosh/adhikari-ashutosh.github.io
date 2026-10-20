@@ -15,7 +15,7 @@ Designed, written and built by Ashutosh Adhikari.
   and phone tiers aligned to it. You can pause it, unmute it, or switch it
   to your microphone; the audio never leaves the page.
 - **The name, drawn in WebGL** under a lens that follows the pointer.
-- **189 two-colour themes.** Search and preview them live from the Themes
+- **160 two-colour themes.** Search and preview them live from the Themes
   button.
 - **A stack of sheets.** Each section slides over the last and leaves its
   tab showing, on any screen size.

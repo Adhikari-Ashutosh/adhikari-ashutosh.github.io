@@ -10,33 +10,27 @@ const THEMES = [
   ["9009", "#eeebe2", "#080909"], ["aether", "#101820", "#eedaea"],
   ["alduin", "#1c1c1c", "#dfd7af"], ["alpine", "#6c687f", "#ffffff"],
   ["anti hero", "#00002e", "#ffadad"], ["arch", "#0c0d11", "#7ebab5"],
-  ["aurora", "#011926", "#00e980"], ["beach", "#ffeead", "#417760"],
-  ["bento", "#2d394d", "#ff7a90"], ["bingsu", "#b8a7aa", "#563744"],
-  ["bliss", "#262727", "#f0d3c9"], ["blue dolphin", "#003950", "#ffcefb"],
-  ["blueberry dark", "#212b42", "#add7ff"], ["blueberry light", "#dae0f5", "#506477"],
-  ["botanical", "#7b9c98", "#2b3031"], ["bouquet", "#173f35", "#eaa09c"],
-  ["breeze", "#e8d5c4", "#695394"], ["bushido", "#242933", "#f7575f"],
-  ["cafe", "#ceb18d", "#14120f"], ["camping", "#faf1e4", "#4f7944"],
-  ["carbon", "#313131", "#f76f11"], ["catppuccin", "#1e1e2e", "#cba6f7"],
-  ["chaos theory", "#141221", "#fd77d7"], ["cheesecake", "#fdf0d5", "#8e2949"],
-  ["cherry blossom", "#323437", "#e76cdc"], ["comfy", "#4a5b6e", "#f8cdc6"],
-  ["copper", "#442f29", "#d58872"], ["creamsicle", "#ff9869", "#464643"],
-  ["cy red", "#6e2626", "#ff847e"], ["cyberspace", "#181c18", "#00ce7c"],
-  ["dark magic girl", "#091f2c", "#f5b1cc"], ["dark note", "#1f1f1f", "#f2c17b"],
+  ["aurora", "#011926", "#00e980"], ["bingsu", "#b8a7aa", "#563744"],
+  ["blue dolphin", "#003950", "#ffcefb"], ["blueberry dark", "#212b42", "#add7ff"],
+  ["blueberry light", "#dae0f5", "#506477"], ["botanical", "#7b9c98", "#2b3031"],
+  ["bouquet", "#173f35", "#eaa09c"], ["breeze", "#e8d5c4", "#695394"],
+  ["bushido", "#242933", "#f7575f"], ["cafe", "#ceb18d", "#14120f"],
+  ["camping", "#faf1e4", "#4f7944"], ["carbon", "#313131", "#f76f11"],
+  ["catppuccin", "#1e1e2e", "#cba6f7"], ["chaos theory", "#141221", "#fd77d7"],
+  ["cheesecake", "#fdf0d5", "#8e2949"], ["cherry blossom", "#323437", "#e76cdc"],
+  ["comfy", "#4a5b6e", "#f8cdc6"], ["copper", "#442f29", "#d58872"],
+  ["creamsicle", "#ff9869", "#464643"], ["cy red", "#6e2626", "#ff847e"],
+  ["cyberspace", "#181c18", "#00ce7c"], ["dark note", "#1f1f1f", "#f2c17b"],
   ["darling", "#fec8cd", "#5d5d5d"], ["deku", "#058b8c", "#300001"],
   ["desert oasis", "#fff2d5", "#8e6a00"], ["dev", "#1b2028", "#23a9d5"],
   ["diner", "#537997", "#fffcf0"], ["dino", "#ffffff", "#00893e"],
-  ["discord", "#313338", "#8192ff"], ["dmg", "#dadbdc", "#ae185e"],
-  ["dollar", "#e4e4d4", "#516d51"], ["dots", "#121520", "#ffffff"],
-  ["dracula", "#282a36", "#bd93f9"], ["drowning", "#191826", "#5b81c8"],
-  ["dualshot", "#737373", "#f8f9f9"], ["earthsong", "#292521", "#579b58"],
+  ["discord", "#313338", "#8192ff"], ["dmg", "#dadbdc", "#ae185e"], ["dots", "#121520", "#ffffff"],
+  ["dracula", "#282a36", "#bd93f9"], ["earthsong", "#292521", "#579b58"],
   ["everblush", "#141b1e", "#8ccf7e"], ["evil eye", "#0084c2", "#16120d"],
   ["ez mode", "#0068c6", "#ffdff4"], ["fire", "#0f0000", "#d63e34"],
-  ["fledgling", "#3b363f", "#ff7387"], ["fleuriste", "#c6b294", "#091914"],
   ["floret", "#00272c", "#ffdd6d"], ["froyo", "#e1dacb", "#5f6161"],
   ["frozen llama", "#9bf2ea", "#6d44a6"], ["fruit chew", "#d6d3d6", "#5c1e5f"],
-  ["fundamentals", "#727474", "#ecffed"], ["future funk", "#2e1a47", "#f7f2ea"],
-  ["github", "#212830", "#41ce5c"], ["godspeed", "#eae4cf", "#4c6a7b"],
+  ["future funk", "#2e1a47", "#f7f2ea"], ["github", "#212830", "#41ce5c"],
   ["graen", "#303c36", "#afa08c"], ["grand prix", "#36475c", "#c0d036"],
   ["grape", "#2c003e", "#ff8f00"], ["gruvbox dark", "#282828", "#d79921"],
   ["gruvbox light", "#fbf1c7", "#467a49"], ["hammerhead", "#030613", "#4fcdb9"],
@@ -51,54 +45,45 @@ const THEMES = [
   ["lilac mist", "#fffbfe", "#b94189"], ["lime", "#7c878e", "#152300"],
   ["luna", "#221c35", "#f67599"], ["macroblank", "#b2d2c8", "#aa1d00"],
   ["magic girl", "#ffffff", "#a2647e"], ["mashu", "#2b2b2c", "#988abe"],
-  ["matcha moccha", "#523525", "#7ec160"], ["material", "#263238", "#80cbc4"],
-  ["matrix", "#000000", "#15ff00"], ["menthol", "#00c18c", "#3f3f3f"],
-  ["metaverse", "#232323", "#f64a4d"], ["metropolis", "#0f1f2c", "#56c3b7"],
+  ["matcha moccha", "#523525", "#7ec160"], ["matrix", "#000000", "#15ff00"],
+  ["menthol", "#00c18c", "#3f3f3f"], ["metropolis", "#0f1f2c", "#56c3b7"],
   ["mexican", "#f8ad34", "#92006f"], ["miami", "#f35588", "#002f2d"],
   ["miami nights", "#18181a", "#e4609b"], ["midnight", "#0b0e13", "#657aa5"],
   ["milkshake", "#ffffff", "#212b43"], ["mint", "#05385b", "#5cdb95"],
-  ["mizu", "#afcbdd", "#1a2633"], ["modern dolch", "#2d2e30", "#7eddd3"],
-  ["modern dolch light", "#dbdbdb", "#296b5f"], ["modern ink", "#ffffff", "#e52a00"],
-  ["monokai", "#272822", "#a6e22e"], ["moonlight", "#191f28", "#c69f68"],
-  ["mountain", "#0f0f0f", "#e7e7e7"], ["mr sleeves", "#d1d7da", "#7e5347"],
-  ["ms cupcakes", "#ffffff", "#00829b"], ["muted", "#525252", "#cebdec"],
+  ["mizu", "#afcbdd", "#1a2633"], ["modern dolch light", "#dbdbdb", "#296b5f"],
+  ["modern ink", "#ffffff", "#e52a00"], ["monokai", "#272822", "#a6e22e"],
+  ["mr sleeves", "#d1d7da", "#7e5347"], ["muted", "#525252", "#cebdec"],
   ["nautilus", "#132237", "#ebb723"], ["nebula", "#212135", "#dc59a3"],
   ["night runner", "#212121", "#feff04"], ["nord", "#242933", "#88c0d0"],
   ["nord light", "#eceff4", "#497474"], ["norse", "#242425", "#5e92a1"],
-  ["oblivion", "#313231", "#a5a096"], ["olive", "#e9e5cc", "#676945"],
-  ["olivia", "#1c1b1d", "#deaf9d"], ["onedark", "#2f343f", "#61afef"],
-  ["our theme", "#ce1226", "#ffe58c"], ["pale nimbus", "#433e4c", "#94ffc2"],
-  ["paper", "#eeeeee", "#444444"], ["passion fruit", "#7c2142", "#f4a3b4"],
-  ["pastel", "#e0b2bd", "#564e11"], ["peach blossom", "#292929", "#99b898"],
-  ["peaches", "#e0d7c1", "#9e4228"], ["phantom", "#000011", "#7aa2f7"],
-  ["pink lemonade", "#f6d992", "#974b3f"], ["pulse", "#181818", "#17b8bd"],
+  ["olive", "#e9e5cc", "#676945"], ["olivia", "#1c1b1d", "#deaf9d"],
+  ["onedark", "#2f343f", "#61afef"], ["our theme", "#ce1226", "#ffe58c"],
+  ["pale nimbus", "#433e4c", "#94ffc2"], ["paper", "#eeeeee", "#444444"],
+  ["passion fruit", "#7c2142", "#f4a3b4"], ["pastel", "#e0b2bd", "#564e11"],
+  ["peach blossom", "#292929", "#99b898"], ["peaches", "#e0d7c1", "#9e4228"],
+  ["phantom", "#000011", "#7aa2f7"], ["pink lemonade", "#f6d992", "#974b3f"],
   ["purpleish", "#1e1e32", "#956fec"], ["rainbow trail", "#f5f5f5", "#363636"],
   ["red dragon", "#1a0b0c", "#ff3a32"], ["red samurai", "#84202c", "#d5ac7b"],
-  ["repose dark", "#2f3338", "#d6d2bc"], ["repose light", "#efead0", "#5f605e"],
-  ["retro", "#dad3c1", "#1d1b17"], ["retrocast", "#07737a", "#a1f4f8"],
-  ["rgb", "#111111", "#eeeeee"], ["rose pine", "#1f1d27", "#9ccfd8"],
-  ["rose pine dawn", "#fffaf3", "#3f7d88"], ["rose pine moon", "#2a273f", "#9ccfd8"],
+  ["repose dark", "#2f3338", "#d6d2bc"], ["retro", "#dad3c1", "#1d1b17"],
+  ["retrocast", "#07737a", "#a1f4f8"], ["rgb", "#111111", "#eeeeee"],
+  ["rose pine", "#1f1d27", "#9ccfd8"], ["rose pine dawn", "#fffaf3", "#3f7d88"],
   ["rudy", "#1a2b3e", "#af8f5c"], ["ryujinscales", "#081426", "#f17754"],
   ["serika", "#e1e1e3", "#7b6200"], ["serika dark", "#323437", "#e2b714"],
   ["sewing tin", "#241963", "#f2ce83"], ["sewing tin light", "#ffffff", "#2d2076"],
-  ["shadow", "#000000", "#eeeeee"], ["shoko", "#ced7e0", "#1f657b"],
-  ["slambook", "#fffdde", "#03001c"], ["snes", "#bfbec2", "#553d94"],
-  ["soaring skies", "#fff9f2", "#007da0"], ["solarized dark", "#002b36", "#859900"],
+  ["shadow", "#000000", "#eeeeee"], ["slambook", "#fffdde", "#03001c"],
+  ["snes", "#bfbec2", "#553d94"], ["solarized dark", "#002b36", "#859900"],
   ["solarized light", "#fdf6e3", "#697900"], ["solarized osaka", "#00141a", "#859900"],
-  ["sonokai", "#2c2e34", "#9ed072"], ["spiderman", "#0d1219", "#e63a39"],
-  ["stealth", "#010203", "#6f767a"], ["strawberry", "#f37f83", "#393936"],
-  ["striker", "#124883", "#d7dcda"], ["suisei", "#3b4a62", "#bef0ff"],
-  ["sunset", "#211e24", "#f79777"], ["superuser", "#262a33", "#43ffaf"],
-  ["sweden", "#0058a3", "#ffcc02"], ["tangerine", "#ffede0", "#c53f00"],
-  ["taro", "#b3baff", "#130f1a"], ["terminal", "#191a1b", "#79a617"],
-  ["terra", "#0c100e", "#89c559"], ["terrazzo", "#f1e5da", "#ac4a1d"],
-  ["terror below", "#0b1e1a", "#66ac92"], ["tiramisu", "#cfc6b9", "#714c25"],
-  ["trackday", "#464d66", "#ffa899"], ["trance", "#00021b", "#e51376"],
-  ["tron orange", "#0d1c1c", "#f0e800"], ["vaporwave", "#a4a7ea", "#790074"],
-  ["vesper", "#101010", "#ffc799"], ["vesper light", "#ffffff", "#c35600"],
-  ["viridescent", "#2c3333", "#95d5b2"], ["voc", "#190618", "#e0caac"],
-  ["vscode", "#1e1e1e", "#2189dc"], ["watermelon", "#1f4437", "#f7868b"],
-  ["wavez", "#1c292f", "#6bde3b"], ["witch girl", "#f3dbda", "#496b5d"],
+  ["sonokai", "#2c2e34", "#9ed072"], ["stealth", "#010203", "#6f767a"],
+  ["strawberry", "#f37f83", "#393936"], ["striker", "#124883", "#d7dcda"],
+  ["suisei", "#3b4a62", "#bef0ff"], ["sunset", "#211e24", "#f79777"],
+  ["superuser", "#262a33", "#43ffaf"], ["sweden", "#0058a3", "#ffcc02"],
+  ["tangerine", "#ffede0", "#c53f00"], ["taro", "#b3baff", "#130f1a"],
+  ["terminal", "#191a1b", "#79a617"], ["terror below", "#0b1e1a", "#66ac92"],
+  ["tiramisu", "#cfc6b9", "#714c25"], ["trackday", "#464d66", "#ffa899"],
+  ["trance", "#00021b", "#e51376"], ["tron orange", "#0d1c1c", "#f0e800"],
+  ["vaporwave", "#a4a7ea", "#790074"], ["vesper", "#101010", "#ffc799"],
+  ["vesper light", "#ffffff", "#c35600"], ["vscode", "#1e1e1e", "#2189dc"],
+  ["watermelon", "#1f4437", "#f7868b"], ["wavez", "#1c292f", "#6bde3b"],
 ];
 
 const root = document.documentElement;
@@ -217,33 +202,78 @@ function save(entry) {
   }
 }
 
-// A preview waits until the pointer or the arrow keys settle on a theme
-// for a moment, then crossfades in (see the stylesheet), so sweeping down
-// the list never strobes the page.
-const SETTLE = 140;
-let wanted = null;
+// Changes of theme glide: the five colours move from where they are to
+// the new theme's over a second, in eight small steps, so the page
+// restyles eight times rather than every frame and nothing ever flashes. A preview starts once the pointer or the arrow keys rest on a
+// theme for a moment, and a new one picks up from wherever the colours
+// are, so sweeping down the list just steers the glide. With reduced
+// motion, changes are instant but at least 0.6 s apart.
+const SETTLE = 260;
+const GLIDE = 1000;
+const STEPS = 8;
+const GAP = 600;
+const BUILT = {
+  light: { paper: "#ffffff", ink: "#000000", graphite: "#5d5d66", hairline: "#dedee4", lift: "rgba(0, 0, 0, 0.32)" },
+  dark: { paper: "#000000", ink: "#ffffff", graphite: "#a1a1aa", hairline: "#2a2a30", lift: "rgba(255, 255, 255, 0.1)" },
+};
+const systemDark = matchMedia("(prefers-color-scheme: dark)");
+const colorProbe = document.createElement("canvas").getContext("2d");
 let timer = 0;
+let ticker = 0;
+let lastInstant = 0;
+
+function target(entry) {
+  if (entry.id === "system") return BUILT[systemDark.matches ? "dark" : "light"];
+  return BUILT[entry.id] || tokens(entry);
+}
+
+function rgba(color) {
+  colorProbe.fillStyle = "#000";
+  colorProbe.fillStyle = color;
+  const v = colorProbe.fillStyle;
+  if (v[0] === "#") return [...[1, 3, 5].map((i) => parseInt(v.slice(i, i + 2), 16)), 1];
+  const [r, g, b, a = 1] = v.match(/[\d.]+/g).map(Number);
+  return [r, g, b, a];
+}
 
 function preview(entry) {
-  wanted = entry;
   clearTimeout(timer);
-  timer = setTimeout(() => wanted && wanted.id !== shown && fade(wanted), SETTLE);
+  timer = setTimeout(() => glide(entry), SETTLE);
 }
 
-function transition(kind, ms, entry) {
-  if (!document.startViewTransition || reducedMotion.matches) return apply(entry);
-  root.classList.add(kind);
-  window.dispatchEvent(new CustomEvent("themetransition", { detail: ms }));
-  document.startViewTransition(() => apply(entry)).finished.finally(() => root.classList.remove(kind));
-}
-
-const fade = (entry) => transition("is-fading", 450, entry);
-
-// A tap opens the new theme out from the finger, like the old switch.
-function reveal(x, y, entry) {
-  root.style.setProperty("--reveal-x", `${x}px`);
-  root.style.setProperty("--reveal-y", `${y}px`);
-  transition("is-revealing", 900, entry);
+function glide(entry) {
+  if (entry.id === shown) return;
+  clearInterval(ticker);
+  if (reducedMotion.matches) {
+    const wait = Math.max(0, lastInstant + GAP - performance.now());
+    timer = setTimeout(() => {
+      lastInstant = performance.now();
+      apply(entry);
+    }, wait);
+    return;
+  }
+  const now = getComputedStyle(root);
+  const from = Object.fromEntries(TOKENS.map((k) => [k, rgba(now.getPropertyValue(`--${k}`).trim())]));
+  const goal = target(entry);
+  const to = Object.fromEntries(TOKENS.map((k) => [k, rgba(goal[k])]));
+  const start = performance.now();
+  shown = entry.id;
+  const step = () => {
+    const t = Math.min(1, (performance.now() - start) / GLIDE);
+    if (t >= 1) {
+      clearInterval(ticker);
+      apply(entry);
+      return;
+    }
+    const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+    for (const k of TOKENS) {
+      const c = from[k].map((v, i) => v + (to[k][i] - v) * e);
+      root.style.setProperty(`--${k}`, `rgba(${Math.round(c[0])}, ${Math.round(c[1])}, ${Math.round(c[2])}, ${c[3].toFixed(3)})`);
+    }
+    window.dispatchEvent(new Event("themechange"));
+  };
+  ticker = setInterval(step, GLIDE / STEPS);
+  step();
 }
 
 // ==== Palette ==============================================================
@@ -256,7 +286,6 @@ let active = -1;
 let committed = "system";
 let shown = "system";
 let pointing = false; // previews follow the pointer only after it moves
-let touch = false;
 
 function build() {
   dialog = document.createElement("dialog");
@@ -334,7 +363,6 @@ function build() {
     }
   });
 
-  list.addEventListener("pointerdown", (e) => (touch = e.pointerType !== "mouse"));
   list.addEventListener("pointermove", (e) => {
     if (e.pointerType !== "mouse") return;
     pointing = true;
@@ -350,14 +378,14 @@ function build() {
   });
   list.addEventListener("click", (e) => {
     const li = optionAt(e.target);
-    if (li) choose(Number(li.dataset.index), e);
+    if (li) choose(Number(li.dataset.index));
   });
 
   // A click outside the panel lands on the dialog itself.
   dialog.addEventListener("click", (e) => e.target === dialog && dialog.close());
   dialog.addEventListener("close", () => {
     clearTimeout(timer);
-    if (shown !== committed) fade(byId(committed));
+    glide(byId(committed));
   });
 }
 
@@ -398,21 +426,14 @@ function filter(query, show) {
   options[0].parentElement.scrollTop = 0;
 }
 
-function choose(i, e) {
+function choose(i) {
   const entry = entries[i];
   committed = entry.id;
   save(entry);
   for (const o of options) o.setAttribute("aria-selected", String(o === options[i]));
   setActive(i, false);
-  if (touch && e) {
-    // No hover on a touchscreen: a tap applies the theme and leaves the
-    // list open for the next one.
-    clearTimeout(timer);
-    if (entry.id !== shown) reveal(e.clientX, e.clientY, entry);
-    return;
-  }
   clearTimeout(timer);
-  if (entry.id !== shown) apply(entry);
+  glide(entry);
   dialog.close();
 }
 
@@ -425,7 +446,6 @@ export function openPalette() {
   filter("", false);
   setActive(current, false);
   pointing = false;
-  touch = coarse.matches;
   input.autofocus = !coarse.matches;
   dialog.showModal();
   options[current].scrollIntoView({ block: "center" });
