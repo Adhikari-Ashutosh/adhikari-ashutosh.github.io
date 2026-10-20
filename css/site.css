@@ -132,13 +132,10 @@ a:hover {
 }
 
 /* The hero fills the screen. The next sheet waits fully below the fold,
-   lifts into view and springs back out once to invite a scroll. The hero
-   is its own stacking context so the glow can sit above its background
-   but under its text. */
+   lifts into view and springs back out once to invite a scroll. */
 .hero {
   display: flex;
   flex-direction: column;
-  isolation: isolate;
   height: 100svh;
   min-height: 620px;
 }
@@ -203,10 +200,15 @@ a:hover {
 
 .links {
   display: flex;
-  align-items: baseline;
-  gap: 20px;
+  align-items: center;
+  gap: 4px;
+  margin-right: -12px;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.links > a {
+  text-decoration: none;
 }
 
 .name {
@@ -665,13 +667,12 @@ a:hover {
   color: var(--ink);
 }
 
-/* ==== Theme and glow ==================================================== */
+/* ==== Masthead links and theme ========================================== */
 
 .theme {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 0;
   border: 0;
   background: none;
   color: var(--ink);
@@ -697,63 +698,57 @@ a:hover {
   transform: rotate(180deg);
 }
 
-.theme:hover {
-  text-decoration: underline 2px;
-  text-underline-offset: 0.18em;
+/* Each link is a pill whose outline lights up where the pointer is, in
+   the colour of where it leads: a hairline ring, a small spotlight on it,
+   and a faint halo. */
+.links > a,
+.links > button {
+  --tone: var(--ink);
+  position: relative;
+  padding: 6px 12px;
+  border-radius: 999px;
+  transition: box-shadow 250ms ease;
 }
 
-/* A soft bloom centred on the hovered link, behind the content. Plain
-   gradients (no filters or blend modes) keep it cheap. */
-.glow {
-  --a: transparent;
-  --b: transparent;
-  position: fixed;
-  top: var(--glow-y, 0px);
-  left: var(--glow-x, 90vw);
-  z-index: -1;
-  width: 800px;
-  height: 800px;
-  margin: -400px 0 0 -400px;
-  border-radius: 50%;
+.links > [data-tone="github"] {
+  --tone: #2ea043;
+}
+
+.links > [data-tone="linkedin"] {
+  --tone: #3d8ef0;
+}
+
+.links > a::after,
+.links > button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
   background:
-    radial-gradient(circle at 44% 44%, var(--a), transparent 46%),
-    radial-gradient(circle at 57% 57%, var(--b), transparent 52%);
+    radial-gradient(56px circle at var(--mx, 50%) var(--my, 50%), var(--tone), transparent),
+    linear-gradient(var(--hairline), var(--hairline));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   pointer-events: none;
   opacity: 0;
-  transform: scale(0.55);
-  transition: opacity 450ms ease, transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  transition: opacity 250ms ease;
 }
 
-.glow.is-on {
-  opacity: 1;
-  transform: none;
+.links > :focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 1.5px var(--tone);
 }
 
-.glow.is-flare {
-  opacity: 0;
-  transform: scale(3.4);
-  transition: opacity 1000ms ease-in, transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
-}
+@media (hover: hover) {
+  .links > :hover {
+    box-shadow: 0 0 18px -8px var(--tone);
+  }
 
-.glow[data-tone="github"] {
-  --a: rgba(45, 164, 78, 0.4);
-  --b: rgba(64, 196, 99, 0.32);
-}
-
-.glow[data-tone="linkedin"] {
-  --a: rgba(47, 123, 255, 0.36);
-  --b: rgba(63, 210, 255, 0.32);
-}
-
-.glow[data-tone="black"] {
-  --a: rgba(0, 0, 0, 0.48);
-  --b: rgba(0, 0, 0, 0.32);
-}
-
-.glow[data-tone="white"] {
-  --a: rgba(255, 255, 255, 0.3);
-  --b: rgba(255, 255, 255, 0.18);
+  .links > :hover::after {
+    opacity: 1;
+  }
 }
 
 /* The new theme opens out from the switch in a circle. */
@@ -773,11 +768,5 @@ a:hover {
   }
   to {
     clip-path: circle(150vmax at var(--reveal-x, 90%) var(--reveal-y, 0%));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .glow {
-    display: none;
   }
 }

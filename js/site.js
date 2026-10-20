@@ -1,5 +1,5 @@
 // Page behaviour: the sheet stack and the Mumbai clock, then the theme
-// switch and the link glows.
+// switch and the masthead links.
 
 const root = document.documentElement;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -80,29 +80,19 @@ if (clock) {
   tick();
 }
 
-// ==== Theme and glow =======================================================
+// ==== Theme ================================================================
 // The switch remembers its choice, otherwise the system decides. The new
-// theme opens out from the switch while a glow flares from it. Hovering a
-// link blooms a glow around it: green for GitHub, blue for LinkedIn, and
-// the colour of the theme you'd get for the switch.
+// theme opens out from the switch in a circle.
 
 const toggle = document.querySelector(".theme");
-const glow = document.querySelector(".glow");
 const systemDark = matchMedia("(prefers-color-scheme: dark)");
 const current = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
-let flareTimer = 0;
 
 function renderToggle() {
   const next = current() === "dark" ? "light" : "dark";
   toggle.textContent = next === "dark" ? "Dark" : "Light";
   toggle.dataset.current = current();
   toggle.setAttribute("aria-label", `Switch to ${next} mode`);
-}
-
-function aim(el) {
-  const r = el.getBoundingClientRect();
-  root.style.setProperty("--glow-x", `${r.left + r.width / 2}px`);
-  root.style.setProperty("--glow-y", `${r.top + r.height / 2}px`);
 }
 
 function setTheme(next) {
@@ -123,14 +113,6 @@ if (toggle) {
     const r = toggle.getBoundingClientRect();
     root.style.setProperty("--reveal-x", `${r.left + r.width / 2}px`);
     root.style.setProperty("--reveal-y", `${r.top + r.height / 2}px`);
-    if (glow) {
-      clearTimeout(flareTimer);
-      aim(toggle);
-      glow.dataset.tone = next === "dark" ? "black" : "white";
-      glow.classList.remove("is-on");
-      glow.classList.add("is-flare");
-      flareTimer = setTimeout(() => glow.classList.remove("is-flare"), 1050);
-    }
     window.dispatchEvent(new CustomEvent("themetransition", { detail: 900 }));
     document.startViewTransition(() => setTheme(next));
   });
@@ -142,19 +124,11 @@ if (toggle) {
   toggle.hidden = false;
 }
 
-if (glow) {
-  for (const el of document.querySelectorAll("[data-glow]")) {
-    const on = () => {
-      if (glow.classList.contains("is-flare")) return;
-      aim(el);
-      const kind = el.dataset.glow;
-      glow.dataset.tone = kind === "theme" ? (current() === "dark" ? "white" : "black") : kind;
-      glow.classList.add("is-on");
-    };
-    const off = () => glow.classList.remove("is-on");
-    el.addEventListener("pointerenter", on);
-    el.addEventListener("pointerleave", off);
-    el.addEventListener("focus", on);
-    el.addEventListener("blur", off);
-  }
+// The outline of a masthead link lights up under the pointer.
+for (const el of document.querySelectorAll(".links > a, .links > button")) {
+  el.addEventListener("pointermove", (e) => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  });
 }
