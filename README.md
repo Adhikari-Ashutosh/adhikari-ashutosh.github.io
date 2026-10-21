@@ -20,8 +20,9 @@ Designed, written and built by Ashutosh Adhikari.
 - **A stack of sheets.** Each section slides over the last and leaves its
   tab showing, on any screen size.
 
-Plain HTML, CSS and JavaScript: no framework, no build step, no analytics,
-and nothing loads from a third party.
+Plain HTML, CSS and JavaScript: no framework and no build step. Visits are
+counted with [GoatCounter](https://www.goatcounter.com), without cookies;
+its script is served from this repository.
 
 ## Layout
 
@@ -36,6 +37,7 @@ js/analyser.js            a worker that runs the analysis off the main thread
 js/capture.js             AudioWorklet that hands microphone samples to the worker
 js/name.js                the name in WebGL
 js/palette.js             the theme palette and its themes
+js/count.js               GoatCounter's visit counter
 audio/                    the speech clip (FLAC) and its word and phone timings
 ashutosh-adhikari-cv.pdf  the CV
 fonts/                    Bricolage Grotesque
@@ -68,6 +70,7 @@ These keep their own licenses:
   `stt_en_conformer_ctc_medium` (CC BY 4.0, run from the sherpa-onnx ONNX
   export). Phones within each phrase come from CMU PocketSphinx (BSD
   license) and its US English model.
+- `js/count.js`: GoatCounter's counting script, ISC license.
 - The theme palettes in `js/palette.js` are reduced to two colours from the
   community themes in [Monkeytype](https://github.com/monkeytypegame/monkeytype)
   (GPL-3.0); credit for the original palettes goes to their authors there.
