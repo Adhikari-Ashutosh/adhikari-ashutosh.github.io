@@ -32,10 +32,15 @@ jobs:
           start=2026-10-01T00:00:00Z
           end=$(date -u -d '+1 hour' +%Y-%m-%dT%H:00:00Z)
           get() {
-            curl -sSf --retry 3 -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$SITE/api/v0/stats/$1"
+            code=$(curl -sS --retry 3 -o "$2" -w '%{http_code}' \
+              -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$SITE/api/v0/stats/$1")
+            if [ "$code" != 200 ]; then
+              echo "::error::GoatCounter answered $code for $1: $(head -c 300 "$2")"
+              exit 1
+            fi
           }
-          get "total?start=$start&end=$end" > total.json
-          get "locations?start=$start&end=$end&limit=100" > locations.json
+          get "total?start=$start&end=$end" total.json
+          get "locations?start=$start&end=$end&limit=100" locations.json
           mkdir -p out
           jq -n --slurpfile t total.json --slurpfile l locations.json --arg at "$(date -u +%FT%TZ)" \
             '{updated: $at, total: $t[0].total, countries: [$l[0].stats[] | select(.id != "") | {id, name, count}]}' \
