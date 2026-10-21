@@ -229,7 +229,8 @@ function start(figure) {
   async function load() {
     const [geo, visits] = await Promise.all([
       import("./globe-data.js?v=1"),
-      fetch(DATA_URL)
+      // Ask GitHub each time rather than trusting the browser's copy.
+      fetch(DATA_URL, { cache: "no-cache" })
         .then((res) => (res.ok ? res.json() : null))
         .catch(() => null),
     ]);
