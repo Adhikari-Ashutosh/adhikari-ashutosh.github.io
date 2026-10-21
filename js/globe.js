@@ -7,6 +7,16 @@
 const DATA_URL = "https://raw.githubusercontent.com/Adhikari-Ashutosh/adhikari-ashutosh.github.io/data/visitors.json";
 const SPIN = (2 * Math.PI) / 50; // radians a second, west to east
 const TILT = 0.4; // how far the north pole leans towards the viewer
+// Made-up visitors, shown only with ?sample-globe in the address, to see
+// how the globe looks with more countries. The caption says they're samples.
+const SAMPLE = {
+  total: 140,
+  countries: [
+    ["US", "United States", 40], ["DE", "Germany", 18], ["JP", "Japan", 14], ["GB", "United Kingdom", 12],
+    ["BR", "Brazil", 9], ["CA", "Canada", 7], ["AU", "Australia", 6], ["SG", "Singapore", 5],
+    ["ZA", "South Africa", 4], ["IN", "India", 25],
+  ].map(([id, name, count]) => ({ id, name, count })),
+};
 const LOW_END = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
 
 function start(figure) {
@@ -227,12 +237,15 @@ function start(figure) {
   // Data --------------------------------------------------------------------
 
   async function load() {
+    const sample = new URLSearchParams(location.search).has("sample-globe");
     const [geo, visits] = await Promise.all([
       import("./globe-data.js?v=1"),
-      // Ask GitHub each time rather than trusting the browser's copy.
-      fetch(DATA_URL, { cache: "no-cache" })
-        .then((res) => (res.ok ? res.json() : null))
-        .catch(() => null),
+      sample
+        ? SAMPLE
+        : // Ask GitHub each time rather than trusting the browser's copy.
+          fetch(DATA_URL, { cache: "no-cache" })
+            .then((res) => (res.ok ? res.json() : null))
+            .catch(() => null),
     ]);
     world = decode(geo);
     const list = (visits?.countries || []).filter((v) => world.labelIndex.has(v.id) && v.count > 0);
@@ -249,7 +262,7 @@ function start(figure) {
       lon0 = Math.atan2(x, z);
       const total = Number(visits.total) || list.reduce((s, v) => s + v.count, 0);
       const n = list.length;
-      summary = `${total.toLocaleString("en-US")} ${total === 1 ? "visit" : "visits"} from ${n} ${n === 1 ? "country" : "countries"}`;
+      summary = `${sample ? "Sample: " : ""}${total.toLocaleString("en-US")} ${total === 1 ? "visit" : "visits"} from ${n} ${n === 1 ? "country" : "countries"}`;
       caption.textContent = summary;
       canvas.setAttribute("aria-label", `A globe marking where visitors have come from: ${list.map((v) => v.name).join(", ")}.`);
     }
