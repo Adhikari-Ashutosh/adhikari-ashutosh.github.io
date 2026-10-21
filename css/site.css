@@ -402,17 +402,14 @@ a:hover {
 
   .links {
     flex: none;
+    gap: 2px;
     margin-right: -9px;
     font-size: 0.9375rem;
   }
 
-  .links > a,
-  .links > button {
-    padding: 6px 9px;
-  }
-
-  /* Just the cards on phones; the button keeps its accessible name. */
-  .theme-label {
+  /* Just the icons on phones; the links keep their accessible names. */
+  .theme-label,
+  .mail-label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -832,6 +829,12 @@ a:hover {
 
 /* A fanned hand of three themes, in ink and paper like everything else.
    On hover it fans out and the two behind take on Monkeytype accents. */
+.mail-icon {
+  display: none;
+  width: 20px;
+  height: 16px;
+}
+
 .cards {
   position: relative;
   flex: none;
@@ -936,6 +939,19 @@ a:hover {
 
   .links > :hover::after {
     opacity: 1;
+  }
+}
+
+/* Tighter pills on phones, and the envelope in place of "Email". These
+   come after the rules above so they win. */
+@media (max-width: 760px) {
+  .links > a,
+  .links > button {
+    padding: 6px 9px;
+  }
+
+  .mail-icon {
+    display: block;
   }
 }
 
