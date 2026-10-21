@@ -1,7 +1,7 @@
 // The globe in the footer: country outlines on a shaded sphere that turns
 // slowly, with the countries visitors have come from shaded and pinned. The
 // counts come from GoatCounter: .github/workflows/visitors.yml fetches them
-// every hour into the repository's data branch. Drag it to turn it; point
+// once a day into the repository's data branch. Drag it to turn it; point
 // at or tap a pin to read it.
 
 const DATA_URL = "https://raw.githubusercontent.com/Adhikari-Ashutosh/adhikari-ashutosh.github.io/data/visitors.json";

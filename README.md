@@ -19,7 +19,7 @@ Designed, written and built by Ashutosh Adhikari.
   button.
 - **A globe of visitors.** A small globe at the foot of the page turns
   slowly and pins the countries visits have come from, counted with
-  GoatCounter and fetched every hour by a GitHub Action.
+  GoatCounter and fetched once a day by a GitHub Action.
 - **A stack of sheets.** Each section slides over the last and leaves its
   tab showing, on any screen size.
 
@@ -44,7 +44,7 @@ js/count.js               GoatCounter's visit counter
 js/globe.js               the visitor globe in the footer
 js/globe-data.js          its country outlines and label points
 tools/globe-data.py       writes js/globe-data.js
-.github/workflows/        the hourly job that fetches visitor counts
+.github/workflows/        the daily job that fetches visitor counts
 audio/                    the speech clip (FLAC) and its word and phone timings
 ashutosh-adhikari-cv.pdf  the CV
 fonts/                    Bricolage Grotesque
