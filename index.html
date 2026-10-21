@@ -46,7 +46,7 @@
 }
 </script>
 <link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=31">
+<link rel="stylesheet" href="css/site.css?v=32">
 </head>
 <body>
 <a class="skip" href="#now">Skip to content</a>
@@ -205,6 +205,16 @@
         </dl>
       </div>
         <footer class="colophon">
+          <figure class="visitors">
+            <div class="globe-hold">
+              <div class="globe-shadow" aria-hidden="true"></div>
+              <div class="globe-float">
+                <canvas class="globe" role="img" aria-label="A globe marking where visitors have come from."></canvas>
+                <span class="globe-pin" aria-hidden="true"></span>
+              </div>
+            </div>
+            <figcaption></figcaption>
+          </figure>
           <p class="clock" hidden></p>
           <div>
             <p class="credit">The voice is President John F. Kennedy at Rice University, Houston, on 12 September 1962, recorded by the White House Communications Agency and in the public domain (<a href="https://www.jfklibrary.org/asset-viewer/archives/jfkwha-127-002" target="_blank" rel="noopener">JFK Library</a>). This copy is from <a href="https://commons.wikimedia.org/wiki/File:Jfk_rice_university_we_choose_to_go_to_the_moon.ogg" target="_blank" rel="noopener">Wikimedia Commons</a>. Words and pauses aligned with NVIDIA NeMo’s <a href="https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/stt_en_conformer_ctc_medium" target="_blank" rel="noopener">Conformer-CTC</a>, phones within each phrase with <a href="https://github.com/cmusphinx/pocketsphinx" target="_blank" rel="noopener">CMU PocketSphinx</a>.</p>
@@ -221,6 +231,7 @@
 <script type="module" src="js/site.js?v=23"></script>
 <script type="module" src="js/spectrogram.js?v=14"></script>
 <script type="module" src="js/name.js?v=4"></script>
+<script type="module" src="js/globe.js?v=1"></script>
 <script data-goatcounter="https://aa-globe-track.goatcounter.com/count" async src="js/count.js?v=1"></script>
 </body>
 </html>

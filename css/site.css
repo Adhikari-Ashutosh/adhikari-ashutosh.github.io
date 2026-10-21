@@ -368,7 +368,7 @@ a:hover {
 
 .colophon {
   display: grid;
-  grid-template-columns: var(--label) minmax(0, var(--measure));
+  grid-template-columns: var(--label) minmax(0, var(--measure)) auto;
   column-gap: 40px;
   margin-top: auto;
   padding: 22px 0 30px;
@@ -1087,5 +1087,134 @@ a:hover {
 @media (prefers-reduced-motion: reduce) {
   .palette[open] {
     animation: none;
+  }
+}
+
+/* ==== Visitors ========================================================== */
+/* A small globe at the right of the footer, marking where visitors have
+   come from. It bobs gently over its shadow. On phones it sits in the
+   text, which wraps around it. */
+
+.visitors {
+  display: grid;
+  grid-row: 1;
+  grid-column: 3;
+  align-self: end;
+  justify-self: end;
+  justify-items: center;
+  gap: 4px;
+  /* Down into the footer's bottom padding, to keep the footer's height. */
+  margin: 0 0 -16px;
+}
+
+.globe-hold {
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.globe-shadow {
+  position: absolute;
+  right: 20%;
+  bottom: 0;
+  left: 20%;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--paper), #000 32%), transparent);
+  animation: globe-shadow 5s ease-in-out infinite;
+}
+
+.globe-float {
+  position: relative;
+  animation: globe-float 5s ease-in-out infinite;
+}
+
+.is-still .globe-float,
+.is-still .globe-shadow {
+  animation-play-state: paused;
+}
+
+@keyframes globe-float {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes globe-shadow {
+  50% {
+    opacity: 0.65;
+    transform: scaleX(0.85);
+  }
+}
+
+.globe {
+  display: block;
+  width: 132px;
+  height: 132px;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.globe:active {
+  cursor: grabbing;
+}
+
+/* The name of the country under the pointer, over its pin. */
+.globe-pin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1px 7px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% calc(-100% - 7px);
+  transition: opacity 150ms ease;
+}
+
+.globe-pin.is-on {
+  opacity: 1;
+}
+
+.visitors figcaption {
+  min-height: 1.5em;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-float,
+  .globe-shadow {
+    animation: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .colophon {
+    display: block;
+  }
+
+  .visitors {
+    float: right;
+    margin: 0 0 0 10px;
+    shape-outside: circle(36px at 42px 32px);
+  }
+
+  .globe {
+    width: 64px;
+    height: 64px;
+  }
+
+  .globe-hold {
+    padding-bottom: 8px;
+  }
+
+  .visitors figcaption {
+    display: none;
   }
 }

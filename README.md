@@ -17,6 +17,9 @@ Designed, written and built by Ashutosh Adhikari.
 - **The name, drawn in WebGL** under a lens that follows the pointer.
 - **160 two-colour themes.** Search and preview them live from the Themes
   button.
+- **A globe of visitors.** A small globe at the foot of the page turns
+  slowly and pins the countries visits have come from, counted with
+  GoatCounter and fetched every hour by a GitHub Action.
 - **A stack of sheets.** Each section slides over the last and leaves its
   tab showing, on any screen size.
 
@@ -38,6 +41,10 @@ js/capture.js             AudioWorklet that hands microphone samples to the work
 js/name.js                the name in WebGL
 js/palette.js             the theme palette and its themes
 js/count.js               GoatCounter's visit counter
+js/globe.js               the visitor globe in the footer
+js/globe-data.js          its country outlines and label points
+tools/globe-data.py       writes js/globe-data.js
+.github/workflows/        the hourly job that fetches visitor counts
 audio/                    the speech clip (FLAC) and its word and phone timings
 ashutosh-adhikari-cv.pdf  the CV
 fonts/                    Bricolage Grotesque
@@ -71,6 +78,10 @@ These keep their own licenses:
   export). Phones within each phrase come from CMU PocketSphinx (BSD
   license) and its US English model.
 - `js/count.js`: GoatCounter's counting script, ISC license.
+- `js/globe-data.js`: country outlines from
+  [world-atlas](https://github.com/topojson/world-atlas) (ISC license) and
+  label points from [Natural Earth](https://www.naturalearthdata.com), whose
+  data is in the public domain.
 - The theme palettes in `js/palette.js` are reduced to two colours from the
   community themes in [Monkeytype](https://github.com/monkeytypegame/monkeytype)
   (GPL-3.0); credit for the original palettes goes to their authors there.

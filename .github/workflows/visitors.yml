@@ -1,0 +1,56 @@
+# Every hour, fetches visitor counts by country from GoatCounter and
+# publishes them as visitors.json on the data branch, which the globe in the
+# footer reads. The data branch holds one commit, replaced each time, so it
+# never grows and main's history stays as it is.
+name: Visitors
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visitors
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch counts from GoatCounter
+        env:
+          TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+          SITE: https://aa-globe-track.goatcounter.com
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::notice::Add a GOATCOUNTER_TOKEN secret to publish visitor counts."
+            exit 0
+          fi
+          start=2026-10-01T00:00:00Z
+          end=$(date -u -d '+1 hour' +%Y-%m-%dT%H:00:00Z)
+          get() {
+            curl -sSf --retry 3 -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$SITE/api/v0/stats/$1"
+          }
+          get "total?start=$start&end=$end" > total.json
+          get "locations?start=$start&end=$end&limit=100" > locations.json
+          mkdir -p out
+          jq -n --slurpfile t total.json --slurpfile l locations.json --arg at "$(date -u +%FT%TZ)" \
+            '{updated: $at, total: $t[0].total, countries: [$l[0].stats[] | select(.id != "") | {id, name, count}]}' \
+            > out/visitors.json
+          cat out/visitors.json
+
+      - name: Publish to the data branch
+        if: hashFiles('out/visitors.json') != ''
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          cd out
+          git init -q -b data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add visitors.json
+          git commit -q -m "Update visitor counts"
+          git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" data
