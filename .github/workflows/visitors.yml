@@ -32,13 +32,18 @@ jobs:
           fi
           start=2026-10-01T00:00:00Z
           end=$(date -u -d '+1 hour' +%Y-%m-%dT%H:00:00Z)
+          # GoatCounter sometimes answers with a passing error, so each
+          # request gets three tries, a minute apart.
           get() {
-            code=$(curl -sS --retry 3 -o "$2" -w '%{http_code}' \
-              -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$SITE/api/v0/stats/$1")
-            if [ "$code" != 200 ]; then
-              echo "::error::GoatCounter answered $code for $1: $(head -c 300 "$2")"
-              exit 1
-            fi
+            for try in 1 2 3; do
+              code=$(curl -sS --retry 3 -o "$2" -w '%{http_code}' \
+                -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$SITE/api/v0/stats/$1")
+              [ "$code" = 200 ] && return
+              echo "::warning::GoatCounter answered $code for $1 (try $try): $(head -c 300 "$2")"
+              [ "$try" -lt 3 ] && sleep 60
+            done
+            echo "::error::GoatCounter kept failing for $1; the globe keeps the last counts."
+            exit 1
           }
           get "total?start=$start&end=$end" total.json
           get "locations?start=$start&end=$end&limit=100" locations.json
