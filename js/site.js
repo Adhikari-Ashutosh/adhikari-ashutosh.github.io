@@ -83,7 +83,7 @@ if (next.length && !reducedMotion.matches) {
 // pointing at a piece of work lights up its tools.
 
 const toolChips = [...document.querySelectorAll(".chips [data-work]")];
-const workSpans = [...document.querySelectorAll(".work [data-work]")];
+const workSpans = [...document.querySelectorAll(".split span[data-work]")];
 
 function hoverable(el, on, off) {
   el.addEventListener("pointerenter", on);
@@ -109,8 +109,8 @@ for (const span of workSpans) {
 }
 
 // Once a visitor has turned the sound on, on this visit or an earlier one,
-// each pill the pointer enters plays the next note of the Moonlight Sonata
-// (js/keys.js).
+// the pills are the keys of a music box (js/keys.js): left to right goes
+// up, and the top row sits highest.
 let soundOn = false;
 try {
   soundOn = localStorage.getItem("sound-on") === "1";
@@ -120,10 +120,15 @@ try {
 addEventListener("soundon", () => (soundOn = true));
 
 let keys = null;
-const loadKeys = () => (keys ??= import("./keys.js?v=3"));
-for (const pill of document.querySelectorAll(".chips li")) {
-  pill.addEventListener("pointerenter", () => soundOn && loadKeys().then((k) => k.play()));
-}
+const loadKeys = () => (keys ??= import("./keys.js?v=4"));
+const rows = [...document.querySelectorAll(".chips")];
+rows.forEach((row, r) => {
+  // Each row starts a few steps below the one above it.
+  const base = rows.slice(r + 1).reduce((n, next) => n + Math.ceil(next.children.length / 2), 1);
+  [...row.children].forEach((pill, j) =>
+    pill.addEventListener("pointerenter", () => soundOn && loadKeys().then((k) => k.play(base + j))),
+  );
+});
 // Audio can only start after a click or key press, so take the first one.
 for (const type of ["pointerdown", "keydown"]) {
   addEventListener(type, () => soundOn && loadKeys().then((k) => k.wake()), { capture: true });

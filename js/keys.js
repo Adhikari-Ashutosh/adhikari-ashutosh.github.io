@@ -1,37 +1,16 @@
-// The tool pills as a small music box playing the opening of the first
-// movement of Beethoven's "Moonlight" Sonata (1801): whichever pill the
-// pointer enters plays the next note of its triplets, so any wander across
-// them plays it at the visitor's own pace. After a few seconds' rest it
-// starts again from the top. Only loaded once the visitor has turned the
-// page's sound on at some point.
+// The tool pills as the keys of a small music box. Each pill is a step of a
+// pentatonic scale, so any notes, in any order and at any pace, sit well
+// together. The scale drifts every few seconds between keys a third apart
+// (D, B flat, G, E flat), so the same pills ring differently as it moves.
+// Only loaded once the visitor has turned the page's sound on at some point.
 
-// An octave above the score, in the music box's range.
-const Gs = 415.3; // G sharp
-const A = 440.0;
-const Bs = 523.25; // B sharp, the C above
-const Cs = 554.37; // C sharp
-const D = 587.33;
-const Ds = 622.25; // D sharp
-const E = 659.26;
-const Fs = 739.99; // F sharp
-
-const times = (n, notes) => Array.from({ length: n }, () => notes).flat();
-
-// The first four bars, as the right hand plays them: C sharp minor, over B,
-// then A, the Neapolitan D major, and the dominant, back to the start.
-const TUNE = [
-  ...times(4, [Gs, Cs, E]),
-  ...times(4, [Gs, Cs, E]),
-  ...times(2, [A, Cs, E]),
-  ...times(2, [A, D, Fs]),
-  ...times(2, [Gs, Bs, Fs]),
-  ...[Gs, Cs, E],
-  ...[Gs, Bs, Ds],
+const FIELDS = [
+  [62, 64, 66, 69, 71], // D E F# A B
+  [58, 60, 62, 65, 67], // Bb C D F G
+  [55, 57, 59, 62, 64], // G A B D E
+  [63, 65, 67, 70, 72], // Eb F G Bb C
 ];
-const REST = 3; // seconds without a note before the tune starts over
-
-let next = 0;
-let last = -Infinity;
+const HOLD = 6; // seconds in each key
 
 let ctx = null;
 let out = null;
@@ -48,18 +27,19 @@ export function wake() {
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
 }
 
-export function play() {
+// Step 0 is the key's root an octave below middle; each five steps go up an
+// octave.
+export function play(step) {
   wake();
   if (ctx.state !== "running") return;
   const t = ctx.currentTime + 0.01;
-  if (t - last > REST) next = 0;
-  tine(TUNE[next], t);
-  next = (next + 1) % TUNE.length;
-  last = t;
+  const field = FIELDS[Math.floor(t / HOLD) % FIELDS.length];
+  const midi = field[step % 5] - 12 + 12 * Math.floor(step / 5);
+  tine(440 * 2 ** ((midi - 69) / 12), t);
 }
 
 // A music-box tine: a sine with a quieter octave and a faint, quickly
-// fading high partial, touched lightly and left to ring like a held pedal.
+// fading high partial, touched lightly and left to ring.
 function tine(f, t) {
   for (const [ratio, level, ring] of [
     [1, 0.22, 1.4],

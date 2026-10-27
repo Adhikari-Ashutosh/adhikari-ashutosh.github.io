@@ -340,7 +340,7 @@ a:hover {
 
 /* Tools as pills that invert under the pointer. Pointing at one lights
    up the work it went into, and pointing at a piece of work lights up its
-   tools. A dashed pill is one I'm still learning. */
+   tools. */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -368,31 +368,26 @@ a:hover {
   outline: 0;
 }
 
-.chips .is-learning {
-  border-style: dashed;
-  color: var(--graphite);
-}
-
 .chips li.is-lit {
   border-color: var(--ink);
   background: var(--ink);
   color: var(--paper);
 }
 
-.work span[data-work] {
+.split span[data-work] {
   border-radius: 3px;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
 }
 
-.work span[data-work].is-lit {
+.split span[data-work].is-lit {
   background: var(--ink);
   box-shadow: 0 0 0 2px var(--ink);
   color: var(--paper);
 }
 
-.work span[data-work].is-lit a {
+.split span[data-work].is-lit a {
   color: inherit;
 }
 
