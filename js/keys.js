@@ -1,7 +1,9 @@
-// The tool pills as the keys of a small music box, laid out in order along
-// the opening of the "Ode to Joy" from Beethoven's Ninth Symphony (1824):
-// run the pointer across them at a steady walk and the tune plays. Only
-// loaded once the visitor has turned the page's sound on at some point.
+// The tool pills as a small music box playing the opening of the "Ode to
+// Joy" from Beethoven's Ninth Symphony (1824): whichever pill the pointer
+// enters plays the next note, so any wander across them plays the tune at
+// the visitor's own pace. After a few seconds' rest it starts again from
+// the top. Only loaded once the visitor has turned the page's sound on at
+// some point.
 
 const C = 523.25;
 const D = 587.33;
@@ -9,14 +11,12 @@ const E = 659.26;
 const F = 698.46;
 const G = 783.99;
 
-// Two phrases of the theme. The last pill plays the closing figure.
-const TUNE = [E, E, F, G, G, F, E, D, C, C, D, E, E, D, D, E, E, F, G, G, F, E, D, C, C, D];
-const CADENCE = [
-  [E, 0],
-  [D, 0.3],
-  [C, 0.75],
-  [C, 0.9],
-];
+// Two phrases of the theme.
+const TUNE = [E, E, F, G, G, F, E, D, C, C, D, E, E, D, D, E, E, F, G, G, F, E, D, C, C, D, E, D, C, C];
+const REST = 3; // seconds without a note before the tune starts over
+
+let next = 0;
+let last = -Infinity;
 
 let ctx = null;
 let out = null;
@@ -33,12 +33,14 @@ export function wake() {
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
 }
 
-export function play(i, count) {
+export function play() {
   wake();
   if (ctx.state !== "running") return;
   const t = ctx.currentTime + 0.01;
-  if (i === count - 1) for (const [f, at] of CADENCE) tine(f, t + at);
-  else tine(TUNE[i % TUNE.length], t);
+  if (t - last > REST) next = 0;
+  tine(TUNE[next], t);
+  next = (next + 1) % TUNE.length;
+  last = t;
 }
 
 // A music-box tine: a sine with a quieter octave and a faint, quickly
