@@ -78,6 +78,18 @@ if (next.length && !reducedMotion.matches) {
   setTimeout(invite, 1800);
 }
 
+// ==== Tools ================================================================
+// Pointing at (or tapping) a tool lights up where the work above uses it.
+
+for (const chip of document.querySelectorAll(".chips [data-skill]")) {
+  const marks = document.querySelectorAll(`.rows span[data-skill="${chip.dataset.skill}"]`);
+  const light = (on) => marks.forEach((m) => m.classList.toggle("is-lit", on));
+  chip.addEventListener("pointerenter", () => light(true));
+  chip.addEventListener("pointerleave", () => document.activeElement !== chip && light(false));
+  chip.addEventListener("focus", () => light(true));
+  chip.addEventListener("blur", () => light(false));
+}
+
 // ==== Clock ================================================================
 
 const clock = document.querySelector(".clock");

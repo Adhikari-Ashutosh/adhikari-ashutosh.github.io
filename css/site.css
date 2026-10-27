@@ -338,6 +338,57 @@ a:hover {
   color: var(--graphite);
 }
 
+/* A second group of rows in a section starts with its own lead. */
+.rows + .lead {
+  margin-top: 52px;
+}
+
+/* Tools as pills that invert under the pointer. Pointing at one that the
+   work above mentions lights up those words too. A dashed pill is one
+   I'm still learning. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 2px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.chips li:hover,
+.chips li:focus-visible {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  outline: 0;
+}
+
+.chips .is-learning {
+  border-style: dashed;
+  color: var(--graphite);
+}
+
+.rows span[data-skill] {
+  border-radius: 3px;
+  transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+
+.rows span[data-skill].is-lit {
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
+  color: var(--paper);
+}
+
 .row .title {
   display: block;
   font-weight: 600;
