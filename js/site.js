@@ -79,15 +79,33 @@ if (next.length && !reducedMotion.matches) {
 }
 
 // ==== Tools ================================================================
-// Pointing at (or tapping) a tool lights up where the work above uses it.
+// Pointing at (or tapping) a tool lights up the work it went into, and
+// pointing at a piece of work lights up its tools.
 
-for (const chip of document.querySelectorAll(".chips [data-skill]")) {
-  const marks = document.querySelectorAll(`.rows span[data-skill="${chip.dataset.skill}"]`);
-  const light = (on) => marks.forEach((m) => m.classList.toggle("is-lit", on));
-  chip.addEventListener("pointerenter", () => light(true));
-  chip.addEventListener("pointerleave", () => document.activeElement !== chip && light(false));
-  chip.addEventListener("focus", () => light(true));
-  chip.addEventListener("blur", () => light(false));
+const toolChips = [...document.querySelectorAll(".chips [data-work]")];
+const workSpans = [...document.querySelectorAll(".work [data-work]")];
+
+function hoverable(el, on, off) {
+  el.addEventListener("pointerenter", on);
+  el.addEventListener("pointerleave", () => document.activeElement !== el && off());
+  el.addEventListener("focus", on);
+  el.addEventListener("blur", off);
+}
+
+for (const chip of toolChips) {
+  const keys = chip.dataset.work.split(" ");
+  const light = (on) => workSpans.forEach((w) => keys.includes(w.dataset.work) && w.classList.toggle("is-lit", on));
+  hoverable(chip, () => light(true), () => light(false));
+}
+
+for (const span of workSpans) {
+  const key = span.dataset.work;
+  const light = (on) => {
+    span.classList.toggle("is-lit", on);
+    toolChips.forEach((c) => c.dataset.work.split(" ").includes(key) && c.classList.toggle("is-lit", on));
+  };
+  span.addEventListener("pointerenter", () => light(true));
+  span.addEventListener("pointerleave", () => light(false));
 }
 
 // ==== Clock ================================================================

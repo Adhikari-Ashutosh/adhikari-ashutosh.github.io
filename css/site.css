@@ -338,14 +338,9 @@ a:hover {
   color: var(--graphite);
 }
 
-/* A second group of rows in a section starts with its own lead. */
-.rows + .lead {
-  margin-top: 52px;
-}
-
-/* Tools as pills that invert under the pointer. Pointing at one that the
-   work above mentions lights up those words too. A dashed pill is one
-   I'm still learning. */
+/* Tools as pills that invert under the pointer. Pointing at one lights
+   up the work it went into, and pointing at a piece of work lights up its
+   tools. A dashed pill is one I'm still learning. */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -378,15 +373,95 @@ a:hover {
   color: var(--graphite);
 }
 
-.rows span[data-skill] {
+.chips li.is-lit {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.work span[data-work] {
   border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
 }
 
-.rows span[data-skill].is-lit {
+.work span[data-work].is-lit {
   background: var(--ink);
   box-shadow: 0 0 0 2px var(--ink);
   color: var(--paper);
+}
+
+.work span[data-work].is-lit a {
+  color: inherit;
+}
+
+/* The tools sit under the work, or beside it where there's room, so
+   both are in view together. */
+.tools {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: var(--label) minmax(0, var(--measure));
+  column-gap: 40px;
+  margin-top: 52px;
+}
+
+.tools > .lead {
+  grid-column: 2;
+}
+
+.tools > .rows {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 1180px) {
+  .split {
+    grid-template-columns: var(--label) minmax(0, 1fr) 300px;
+    padding-bottom: 40px;
+  }
+
+  .split > .lead {
+    grid-column: 2 / 4;
+    margin-bottom: 18px;
+  }
+
+  .split > .work {
+    grid-row: 2;
+    grid-column: 1 / 3;
+    gap: 18px;
+  }
+
+  .split > .tools {
+    display: block;
+    grid-row: 2;
+    grid-column: 3;
+    margin-top: 0;
+  }
+
+  .split .tools > .lead {
+    margin-bottom: 14px;
+  }
+
+  .split .tools .rows {
+    gap: 12px;
+  }
+
+  .split .tools .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .split .tools .row dt {
+    margin-bottom: 5px;
+  }
+
+  .split .chips {
+    gap: 5px;
+  }
+
+  .split .chips li {
+    padding: 0 9px;
+    font-size: 0.8125rem;
+  }
 }
 
 .row .title {
@@ -799,10 +874,34 @@ a:hover {
   }
 }
 
+/* Six tabs take a lot of a short screen, so they get slimmer. */
+@media (min-width: 761px) and (max-height: 800px) {
+  :root {
+    --cap: 48px;
+  }
+}
+
 @media (max-width: 760px) and (max-height: 720px) {
   :root {
     --cap: 40px;
   }
+}
+
+@media (max-width: 760px) and (max-height: 680px) {
+  :root {
+    --cap: 36px;
+  }
+
+  .section:last-child .section-body {
+    padding-bottom: 12px;
+  }
+
+  .colophon {
+    padding: 10px 0 12px;
+  }
+}
+
+@media (max-width: 760px) and (max-height: 720px) {
 
   .scope {
     margin-top: 14px;

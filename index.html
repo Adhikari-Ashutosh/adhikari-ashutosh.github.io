@@ -46,7 +46,7 @@
 }
 </script>
 <link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/site.css?v=34">
+<link rel="stylesheet" href="css/site.css?v=35">
 </head>
 <body>
 <a class="skip" href="#now">Skip to content</a>
@@ -122,49 +122,55 @@
   <a class="tab" href="#work" style="--i: 2"><div class="wrap section-cap"><h2 id="work-title">Work</h2><span>Speech recognition at BharatGen, from data to serving</span></div></a>
   <section class="sheet section" style="--i: 2" aria-labelledby="work-title">
     <div class="wrap">
-      <div class="section-body">
+      <div class="section-body split">
         <p class="lead">Generative AI Engineer at BharatGen, IIT Bombay, since May 2025. Promoted from AI Software Engineer in November 2025.</p>
-        <dl class="rows">
+        <dl class="rows work">
           <div class="row">
             <dt>Released models</dt>
-            <dd>Contributed to <a href="https://huggingface.co/bharatgenai/Shrutam-2" target="_blank" rel="noopener">Shrutam-2</a>, BharatGen’s <span data-skill="llm-asr">LLM-based speech recognizer</span>. Co-trained Shrutam-HindiASR-1.0, an <span data-skill="ebranchformer">E-Branchformer</span> model at 11.58 WER on Vistaar Hindi (13.6 for IndicWhisper), and wrote the <span data-skill="espnet">ESPnet</span> branch it runs inference on.</dd>
+            <dd><span data-work="shrutam2">Contributed to <a href="https://huggingface.co/bharatgenai/Shrutam-2" target="_blank" rel="noopener">Shrutam-2</a>, BharatGen’s LLM-based speech recognizer.</span> <span data-work="hindi">Co-trained Shrutam-HindiASR-1.0, an E-Branchformer model at 11.58 WER on Vistaar Hindi (13.6 for IndicWhisper)</span>, and <span data-work="espnet">wrote the ESPnet branch it runs inference on</span>.</dd>
           </div>
           <div class="row">
             <dt>Data and training</dt>
-            <dd>Curated and quality-filtered 40,000+ hours of speech with WER-based scoring, and ran <span data-skill="multi-node">multi-GPU, multi-node training</span>.</dd>
+            <dd>Curated and quality-filtered 40,000+ hours of speech with WER-based scoring, and <span data-work="training">ran multi-GPU, multi-node training</span>.</dd>
           </div>
           <div class="row">
             <dt>Serving</dt>
-            <dd>Wrote inference servers for clients, with <span data-skill="silero">Silero VAD</span> and batched inference.</dd>
+            <dd><span data-work="serving">Wrote inference servers for clients, with Silero VAD and batched inference.</span></dd>
           </div>
           <div class="row">
             <dt>Evaluation</dt>
-            <dd>Built WER and CER evaluation pipelines across <span data-skill="whisper">Whisper</span>, <span data-skill="conformer">Conformer</span> and Branchformer models.</dd>
+            <dd><span data-work="eval">Built WER and CER evaluation pipelines across Whisper, Conformer and Branchformer models.</span></dd>
           </div>
           <div class="row">
             <dt>Research</dt>
-            <dd>LLM-based correction of ASR output, and code-switched ASR. Both are papers under review.</dd>
+            <dd><span data-work="research">LLM-based correction of ASR output, and code-switched ASR.</span> Both are papers under review.</dd>
+          </div>
+          <div class="row">
+            <dt>Before</dt>
+            <dd>Machine learning intern at IIT Bombay, January to May 2025: <span data-work="iitb">explored Conformer models for ASR in ESPnet</span>, <span data-work="vits">worked on VITS text-to-speech</span>, <span data-work="ratings">built a FastAPI tool for listening-test ratings</span>, and hosted live demos.</dd>
           </div>
         </dl>
-        <p class="lead">What I work with.</p>
-        <dl class="rows">
-          <div class="row">
-            <dt>Speech</dt>
-            <dd><ul class="chips"><li>NVIDIA NeMo</li><li data-skill="espnet" tabindex="0">ESPnet</li><li data-skill="conformer" tabindex="0">Conformer</li><li data-skill="ebranchformer" tabindex="0">E-Branchformer</li><li data-skill="llm-asr" tabindex="0">LLM-based ASR</li><li>CTC</li><li>RNN-T</li><li data-skill="whisper" tabindex="0">Whisper</li><li>VITS</li><li data-skill="silero" tabindex="0">Silero VAD</li><li>torchaudio</li></ul></dd>
-          </div>
-          <div class="row">
-            <dt>Training</dt>
-            <dd><ul class="chips"><li>PyTorch</li><li>Hugging Face Transformers</li><li>CUDA</li><li data-skill="multi-node" tabindex="0">Multi-GPU, multi-node</li><li>SLURM</li><li>Weights &amp; Biases</li><li>Mixture of experts</li><li>Quantization-aware training</li></ul></dd>
-          </div>
-          <div class="row">
-            <dt>Infrastructure</dt>
-            <dd><ul class="chips"><li>Docker</li><li>Linux</li><li>AWS</li><li>FastAPI</li><li>Git</li></ul></dd>
-          </div>
-          <div class="row">
-            <dt>Languages</dt>
-            <dd><ul class="chips"><li>Python</li><li>Bash</li><li class="is-learning">C++, relearning</li></ul></dd>
-          </div>
-        </dl>
+        <div class="tools">
+          <p class="lead">What I work with.</p>
+          <dl class="rows">
+            <div class="row">
+              <dt>Speech</dt>
+              <dd><ul class="chips"><li>NVIDIA NeMo</li><li data-work="espnet iitb" tabindex="0">ESPnet</li><li data-work="shrutam2 eval iitb" tabindex="0">Conformer</li><li data-work="hindi" tabindex="0">E-Branchformer</li><li data-work="shrutam2" tabindex="0">LLM-based ASR</li><li>CTC</li><li>RNN-T</li><li data-work="eval" tabindex="0">Whisper</li><li data-work="vits" tabindex="0">VITS</li><li data-work="serving" tabindex="0">Silero VAD</li><li>torchaudio</li></ul></dd>
+            </div>
+            <div class="row">
+              <dt>Training</dt>
+              <dd><ul class="chips"><li>PyTorch</li><li>Hugging Face Transformers</li><li>CUDA</li><li data-work="training" tabindex="0">Multi-GPU, multi-node</li><li>SLURM</li><li>Weights &amp; Biases</li><li data-work="shrutam2 research" tabindex="0">Mixture of experts</li><li>Quantization-aware training</li></ul></dd>
+            </div>
+            <div class="row">
+              <dt>Infrastructure</dt>
+              <dd><ul class="chips"><li>Docker</li><li>Linux</li><li>AWS</li><li data-work="ratings" tabindex="0">FastAPI</li><li>Git</li></ul></dd>
+            </div>
+            <div class="row">
+              <dt>Languages</dt>
+              <dd><ul class="chips"><li>Python</li><li>Bash</li><li class="is-learning">C++, relearning</li></ul></dd>
+            </div>
+          </dl>
+        </div>
       </div>
     </div>
   </section>
@@ -247,7 +253,7 @@
 
 
 
-<script type="module" src="js/site.js?v=24"></script>
+<script type="module" src="js/site.js?v=25"></script>
 <script type="module" src="js/spectrogram.js?v=14"></script>
 <script type="module" src="js/name.js?v=4"></script>
 <script type="module" src="js/globe.js?v=3"></script>
