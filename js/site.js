@@ -109,7 +109,8 @@ for (const span of workSpans) {
 }
 
 // Once a visitor has turned the sound on, on this visit or an earlier one,
-// each pill the pointer enters plays the next note of a tune (js/keys.js).
+// each pill the pointer enters plays the next note of the Moonlight Sonata
+// (js/keys.js).
 let soundOn = false;
 try {
   soundOn = localStorage.getItem("sound-on") === "1";
@@ -119,7 +120,7 @@ try {
 addEventListener("soundon", () => (soundOn = true));
 
 let keys = null;
-const loadKeys = () => (keys ??= import("./keys.js?v=2"));
+const loadKeys = () => (keys ??= import("./keys.js?v=3"));
 for (const pill of document.querySelectorAll(".chips li")) {
   pill.addEventListener("pointerenter", () => soundOn && loadKeys().then((k) => k.play()));
 }

@@ -1,18 +1,33 @@
-// The tool pills as a small music box playing the opening of the "Ode to
-// Joy" from Beethoven's Ninth Symphony (1824): whichever pill the pointer
-// enters plays the next note, so any wander across them plays the tune at
-// the visitor's own pace. After a few seconds' rest it starts again from
-// the top. Only loaded once the visitor has turned the page's sound on at
-// some point.
+// The tool pills as a small music box playing the opening of the first
+// movement of Beethoven's "Moonlight" Sonata (1801): whichever pill the
+// pointer enters plays the next note of its triplets, so any wander across
+// them plays it at the visitor's own pace. After a few seconds' rest it
+// starts again from the top. Only loaded once the visitor has turned the
+// page's sound on at some point.
 
-const C = 523.25;
+// An octave above the score, in the music box's range.
+const Gs = 415.3; // G sharp
+const A = 440.0;
+const Bs = 523.25; // B sharp, the C above
+const Cs = 554.37; // C sharp
 const D = 587.33;
+const Ds = 622.25; // D sharp
 const E = 659.26;
-const F = 698.46;
-const G = 783.99;
+const Fs = 739.99; // F sharp
 
-// Two phrases of the theme.
-const TUNE = [E, E, F, G, G, F, E, D, C, C, D, E, E, D, D, E, E, F, G, G, F, E, D, C, C, D, E, D, C, C];
+const times = (n, notes) => Array.from({ length: n }, () => notes).flat();
+
+// The first four bars, as the right hand plays them: C sharp minor, over B,
+// then A, the Neapolitan D major, and the dominant, back to the start.
+const TUNE = [
+  ...times(4, [Gs, Cs, E]),
+  ...times(4, [Gs, Cs, E]),
+  ...times(2, [A, Cs, E]),
+  ...times(2, [A, D, Fs]),
+  ...times(2, [Gs, Bs, Fs]),
+  ...[Gs, Cs, E],
+  ...[Gs, Bs, Ds],
+];
 const REST = 3; // seconds without a note before the tune starts over
 
 let next = 0;
@@ -26,7 +41,7 @@ export function wake() {
   if (!ctx) {
     ctx = new AudioContext();
     out = ctx.createGain();
-    out.gain.value = 0.9;
+    out.gain.value = 0.45;
     const comp = ctx.createDynamicsCompressor();
     out.connect(comp).connect(ctx.destination);
   }
@@ -44,7 +59,7 @@ export function play() {
 }
 
 // A music-box tine: a sine with a quieter octave and a faint, quickly
-// fading high partial, struck and left to ring.
+// fading high partial, touched lightly and left to ring like a held pedal.
 function tine(f, t) {
   for (const [ratio, level, ring] of [
     [1, 0.22, 1.4],
@@ -55,7 +70,7 @@ function tine(f, t) {
     const g = ctx.createGain();
     o.frequency.value = f * ratio;
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(level, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(level, t + 0.012);
     g.gain.exponentialRampToValueAtTime(0.0001, t + ring);
     o.connect(g).connect(out);
     o.start(t);
