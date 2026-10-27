@@ -108,6 +108,27 @@ for (const span of workSpans) {
   span.addEventListener("pointerleave", () => light(false));
 }
 
+// Once a visitor has turned the sound on, on this visit or an earlier one,
+// each pill also plays a note (js/keys.js).
+let soundOn = false;
+try {
+  soundOn = localStorage.getItem("sound-on") === "1";
+} catch {
+  // Storage blocked: only this visit's choice counts.
+}
+addEventListener("soundon", () => (soundOn = true));
+
+let keys = null;
+const loadKeys = () => (keys ??= import("./keys.js?v=1"));
+const pills = [...document.querySelectorAll(".chips li")];
+pills.forEach((pill, i) =>
+  pill.addEventListener("pointerenter", () => soundOn && loadKeys().then((k) => k.play(i, pills.length))),
+);
+// Audio can only start after a click or key press, so take the first one.
+for (const type of ["pointerdown", "keydown"]) {
+  addEventListener(type, () => soundOn && loadKeys().then((k) => k.wake()), { capture: true });
+}
+
 // ==== Clock ================================================================
 
 const clock = document.querySelector(".clock");

@@ -495,6 +495,13 @@ async function start(figure) {
     playback.source = source;
     mode = "play";
     soundButton.setAttribute("aria-pressed", "true");
+    // Remembered, so other sounds on the page know the visitor wants them.
+    try {
+      localStorage.setItem("sound-on", "1");
+    } catch {
+      // Storage blocked; this visit still counts.
+    }
+    window.dispatchEvent(new Event("soundon"));
     update();
   }
 
