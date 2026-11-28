@@ -1,0 +1,21 @@
+{
+  "updated": "2026-11-28T08:30:09Z",
+  "total": 8,
+  "countries": [
+    {
+      "id": "IN",
+      "name": "India",
+      "count": 4
+    },
+    {
+      "id": "US",
+      "name": "United States",
+      "count": 3
+    },
+    {
+      "id": "RU",
+      "name": "Russia",
+      "count": 1
+    }
+  ]
+}
